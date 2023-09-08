@@ -26,7 +26,7 @@ In Part 2, you will map out your plan-of-attack of how you will generate the out
 # for model
 1. Predict the scores and var of each athlete
 2. After done predicting the scores separate step for weighting the scores
-3. Final output. Play around with it, add own constraints, chose players. 
+3. Final output. Play around with it, add own constraints, chose players.
 
 ```
 
