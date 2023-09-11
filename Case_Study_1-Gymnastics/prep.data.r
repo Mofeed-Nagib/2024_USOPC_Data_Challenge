@@ -22,6 +22,9 @@ clean_data <- function(in_data) {
   gym_data$country <- gsub("GE1|GE2", "GER", gym_data$country)
   gym_data$country[gym_data$country == ""] <- NA
   
+  # Rename competitions
+  gym_data$competition[gym_data$competition == "World Cup"] <- "FIG Apparatus World Cup 2023"
+  
   # Format gymnast names, fix capitalization
   gym_data <- gym_data %>% mutate(firstname = str_to_title(firstname),
                                   lastname  = str_to_title(lastname))
