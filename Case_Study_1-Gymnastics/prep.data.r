@@ -52,11 +52,7 @@ clean_data <- function(in_data) {
   
   # Remove rows that are exact duplicates
   gym_data <- gym_data[!duplicated(gym_data), ]
-  
-  # Identify non-exact duplicates
-  
-    # throw out non-exact duplicates where scores don't add up as expected
-  
+    
   return(gym_data)
 }
 
