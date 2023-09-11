@@ -16,6 +16,13 @@ clean_data <- function(in_data) {
   # Format column names
   colnames(gym_data) <- tolower(colnames(gym_data))
   
+  # Fix location names
+  gym_data$location <- gsub("\\.", "", gym_data$location)
+  
+  # Fix country codes
+  gym_data$country <- gsub("GE1|GE2", "GER", gym_data$country)
+  gym_data$country[gym_data$country == ""] <- NA
+  
   # Format gymnast names, fix capitalization
   gym_data <- gym_data %>% mutate(firstname = str_to_title(firstname),
                                   lastname  = str_to_title(lastname))
