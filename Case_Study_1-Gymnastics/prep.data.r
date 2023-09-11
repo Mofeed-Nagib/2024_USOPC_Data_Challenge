@@ -26,6 +26,12 @@ clean_data <- function(in_data) {
   gym_data <- gym_data %>% mutate(firstname = str_to_title(firstname),
                                   lastname  = str_to_title(lastname))
   
+  # Combine gymnast first and last names
+  gym_data$fullname <- paste(gym_data$firstname, gym_data$lastname)
+  
+  # Fix penalties NAs be 0s
+  gym_data$penalty[is.na(gym_data$penalty)] <- 0
+  
   # Fix dates
   gym_data <- gym_data %>%
     # get rid of days of the week
