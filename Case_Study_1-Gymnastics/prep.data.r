@@ -1,5 +1,4 @@
 ## This script cleans the raw gymnastics data in preparation for modeling.
-source("Case_Study_1-Gymnastics/get.data.r")
 
 in_earlier_scores
 in_later_scores
@@ -48,7 +47,15 @@ clean_data <- function(in_data) {
     # make them Date types
     mutate(date = as.Date(date))
   
+  # error catch for date handling
   if (any(is.na(gym_data$date))) {message("Warning: dates may not have processed properly. Some dates now NA.")}
+  
+  # Remove rows that are exact duplicates
+  gym_data <- gym_data[!duplicated(gym_data), ]
+  
+  # Identify non-exact duplicates
+  
+    # throw out non-exact duplicates where scores don't add up as expected
   
   return(gym_data)
 }
