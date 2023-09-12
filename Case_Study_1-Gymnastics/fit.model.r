@@ -32,6 +32,13 @@ for (x in later_scores$fullname) {
 # Make histograms of gymnast distribution by apparatus
 for (i in ls_gymnast_dist) {
   # 
+  # so this is basically looping over each PERSON
+  # so if I want that person's info (setting i just as an example for testing line by line)
+  # i <- 7 
+  # ls_gymnast_dist[[i]][['FX]]['mean']
+  # so maybe for each person you want to loop over their apparatuses as well
+  # ls_gymnast_dist[[i]][[j]]['mean']
+  
   # # Generate 10000 Gaussian deviates from mean and standard deviation
   # data = rnorm(10000, mean = i["mean"], sd = i["sd"])
   # 
