@@ -19,7 +19,7 @@ clean_data <- function(in_data) {
   gym_data$location <- gsub("\\.", "", gym_data$location)
   
   # Fix country codes
-  gym_data$country <- gsub("GE1|GE2", "GER", gym_data$country)
+  gym_data$country <- gsub("\\<GE1\\>|\\<GE2\\>", "GER", gym_data$country)
   gym_data$country[gym_data$country == ""] <- NA
   
   # Rename competitions
@@ -34,6 +34,10 @@ clean_data <- function(in_data) {
   
   # Fix penalties NAs be 0s
   gym_data$penalty[is.na(gym_data$penalty)] <- 0
+  
+  # Fix apparatus names
+  gym_data$apparatus <- gsub("\\<hb\\>", "HB", gym_data$apparatus)
+  gym_data$apparatus <- gsub("\\<VT_1\\>|\\<VT_2\\>|\\<VT1\\>|\\<VT2\\>", "VT", gym_data$apparatus)
   
   # Fix dates
   gym_data <- gym_data %>%
