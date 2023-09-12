@@ -1,5 +1,3 @@
-
-
 d <- later_scores
 
 summary(model)
@@ -20,8 +18,6 @@ for(j in 1:k){
   
   lmer1<- lmer(score ~ (1 + apparatus|lastname) + round, data=d[train.rows,])
   
-
-  
   d$lm1[test.rows] <- predict(lm1, newdata=d[test.rows,])
   d$lmer1[test.rows] <- predict(lmer1, newdata=d[test.rows,])
 }
@@ -31,4 +27,3 @@ d %>% dplyr::select(score, lastname, lm1, lmer1)
 sqrt(mean(d$lm1 - d$score)^2)
 
 sqrt(mean(d$lmer1 - d$score)^2)
-

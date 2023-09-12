@@ -30,10 +30,13 @@ clean_data <- function(in_data) {
                                   lastname  = str_to_title(lastname))
   
   # Combine gymnast first and last names
-  gym_data$fullname <- paste(gym_data$firstname, gym_data$lastname)
+  gym_data$fullname <- trimws(paste(gym_data$firstname, gym_data$lastname))
   
   # Fix penalties NAs be 0s
   gym_data$penalty[is.na(gym_data$penalty)] <- 0
+  
+  # Remove observations with NAs
+  gym_data <- gym_data %>% filter(!is.na(score))
   
   # Fix apparatus names
   gym_data$apparatus <- gsub("\\<hb\\>", "HB", gym_data$apparatus)
