@@ -34,19 +34,20 @@ for (x in later_scores$fullname) {
 # make histograms of gymnast distribution by apparatus
 for (i in seq(1, length(ls_gymnast_dist))) {
   for (j in seq(1, length(ls_gymnast_dist[[i]]))) {
+    
     # generate 10000 Gaussian deviates from mean and standard deviation
     data = rnorm(10000, mean = as.numeric(ls_gymnast_dist[[i]][[j]]['mean']), sd = as.numeric(ls_gymnast_dist[[i]][[j]]['sd']))
 
     # plot histogram with 20 bins
-    hist(data, breaks=20, col="red", main=paste("Histogram of", paste0(ls_gymnast_dist[[i]][[j]]['fullname'], "'s"), ls_gymnast_dist[[i]][[j]]['apparatus'], "Score Distribution"), xlab = "Scores")
+    hist(data, main = paste("Histogram of", paste0(ls_gymnast_dist[[i]][[j]]['fullname'], "'s"), ls_gymnast_dist[[i]][[j]]['apparatus'], "Score Distribution"), xlab = "Scores", col = "blue", breaks = 20)
   }
 }
 
-
+# subset data from AIC model
 subset_later_scores <- sample(c(1:nrow(later_scores)), 100)
 data_sample <- later_scores[subset_later_scores,]
 
 # make AIC model
 lm0 <- lm(score ~ 1, data = data_sample)
 lm_full <- lm(score ~ ., data = data_sample)
-# stepAIC(lm_full, scope = formula(lm0), direction = "backward", data = data_sample)
+stepAIC(lm_full, scope = formula(lm0), direction = "backward", data = data_sample)

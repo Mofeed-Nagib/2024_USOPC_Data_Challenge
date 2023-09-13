@@ -73,5 +73,5 @@ clean_data <- function(in_data) {
 }
 
 # Run function on both datasets
-earlier_scores <- clean_data(in_earlier_scores)
+# earlier_scores <- clean_data(in_earlier_scores)
 later_scores   <- clean_data(in_later_scores)

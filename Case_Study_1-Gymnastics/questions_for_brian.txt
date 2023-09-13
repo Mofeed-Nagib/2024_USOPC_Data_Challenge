@@ -13,7 +13,7 @@ about how Jennie did it? Might go to her talk but in case I can't
 
 
 Idea:
-- Take competition location, make it just country
+- Take competition location, make it just country (assess home court advantage)
 - Run a model predicting score when people are in home country vs not
 
 

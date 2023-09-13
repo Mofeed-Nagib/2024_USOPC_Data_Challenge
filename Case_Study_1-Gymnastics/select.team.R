@@ -20,10 +20,11 @@ men_countries <- c(mens_known_qualifiers, top_men$country)
 women_countries <- c(womens_known_qualifiers, top_women$country)
 
 # Determine a reasonable 5 person team for each country
-men_athletes   <- later_player_scores %>% filter(country %in% men_countries & gender == 'm') %>% group_by(country) %>% slice_max(avg_score, n = 5)
+men_athletes <- later_player_scores %>% filter(country %in% men_countries & gender == 'm') %>% group_by(country) %>% slice_max(avg_score, n = 5)
 women_athletes <- later_player_scores %>% filter(country %in% women_countries & gender == 'w') %>% group_by(country) %>% slice_max(avg_score, n = 5)
 
-countries_not_qualified<- later_player_scores %>% filter(country %in% men_countries & gender == 'm') %>% head(96)
+countries_not_qualified <- later_player_scores %>% filter(country %in% men_countries & gender == 'm') %>% head(96)
+
 # Run simulations
 # In each simulation:
 
