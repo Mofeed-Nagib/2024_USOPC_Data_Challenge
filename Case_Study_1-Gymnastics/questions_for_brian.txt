@@ -29,6 +29,7 @@ less than 0. We could also take a Bayesian approach....
   - See 361 EV charging stations problem in final homework!
   - Tradeoffs: might not have as crazy of standard error issues? Worth trying out
 - Step AIC is going to take forever and seems like a bad idea.
+  - Might be best to test out lm's manually and remove variables and compare quality (using R-squared or AIC or BIC)
 - Let's just ignore the earlier dataset for now! Not the most useful in its current state.
 - We might need to do some manual fudging for some edge cases (young athletes, people who have been injured and out), and that is ok!
 - We don't have info on judging bias but could try to do a home-field advantage thing.
