@@ -9,6 +9,7 @@ so our resulting Normal distribution has a significant tail in scores that seem 
 - Good ways to visualize what is going on?
 - I think we're still a little nebulous about simulations. Can you tell us a little
 about how Jennie did it? Might go to her talk but in case I can't
+- We are trying to run an AIC and BIC model and struggling. Lot of data and lots of predictors to start makes it very difficult to extract the best ones.
 
 
 Idea:

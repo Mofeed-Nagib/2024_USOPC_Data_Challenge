@@ -41,3 +41,12 @@ for (i in seq(1, length(ls_gymnast_dist))) {
     hist(data, breaks=20, col="red", main=paste("Histogram of", paste0(ls_gymnast_dist[[i]][[j]]['fullname'], "'s"), ls_gymnast_dist[[i]][[j]]['apparatus'], "Score Distribution"), xlab = "Scores")
   }
 }
+
+
+subset_later_scores <- sample(c(1:nrow(later_scores)), 100)
+data_sample <- later_scores[subset_later_scores,]
+
+# make AIC model
+lm0 <- lm(score ~ 1, data = data_sample)
+lm_full <- lm(score ~ ., data = data_sample)
+# stepAIC(lm_full, scope = formula(lm0), direction = "backward", data = data_sample)
