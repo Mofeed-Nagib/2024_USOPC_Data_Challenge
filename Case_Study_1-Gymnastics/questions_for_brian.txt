@@ -15,3 +15,27 @@ about how Jennie did it? Might go to her talk but in case I can't
 Idea:
 - Take competition location, make it just country
 - Run a model predicting score when people are in home country vs not
+
+
+9/13 Meeting Notes:
+- Handling low sample size cases: We could have a max st dev / make it impossible to score 
+less than 0. We could also take a Bayesian approach....
+  - Prior would be distribution of typical scores in an event.
+  - But probably don't want to take that Bayesian approach, limited time/knowledge etc. Cap is better option.
+  - Could make our own Bayesian-esque weighted average for athlete means and SDs
+- Our distribution method seems like a good simple start! Yay!
+- If we used a mixed effects model with lmer(),
+  - allow new levels = TRUE in predict()
+  - See 361 EV charging stations problem in final homework!
+  - Tradeoffs: might not have as crazy of standard error issues? Worth trying out
+- Step AIC is going to take forever and seems like a bad idea.
+- Let's just ignore the earlier dataset for now! Not the most useful in its current state.
+- We might need to do some manual fudging for some edge cases (young athletes, people who have been injured and out), and that is ok!
+- We don't have info on judging bias but could try to do a home-field advantage thing.
+- Simulations
+  - Efficient ways to do it:
+    - Instead of a nested for loop, generate all combos of teams (expand.grid) into a dataset
+    - Make all combinations of predictions ahead of time
+    - Can plug in a vector of means and sds to do simulations in one step 
+
+  
