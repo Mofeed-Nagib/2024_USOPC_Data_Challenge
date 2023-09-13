@@ -17,8 +17,9 @@ knitr::opts_chunk$set(echo = TRUE)
 In this part you will focus on predicting outcomes (scores, medals, probability of medaling, or other outcomes of interest) for a single set of 5-person teams for the countries in the competition.  
 
 1. Determine a reasonable set of countries that will compete in the Olympics
-2. Determine a reasonable 5-person team for every country. This does not have to be optimal at this point, just reasonable. Don't spend a lot of time on these first two points. Just get something reasonable that you can use in #3. 
-3. Assuming these are the 5-person teams, simulate, or otherwise determine the likely outcomes of 
+2. Determine a reasonable 5-person team for every country. This does not have to be optimal at this point, just reasonable.  
+3. Determine the additional gymnasts, not from one of the qualifying countries, that will qualify for the Olympics. Don't spend a lot of time on these first three points. Just get something reasonable that you can use in #4.
+4. Assuming these are the 5-person teams, simulate, or otherwise determine the likely outcomes of 
 
     a. the qualifying stage, 
     b. team all-around, 
@@ -26,5 +27,3 @@ In this part you will focus on predicting outcomes (scores, medals, probability 
     d. individual event finals. 
 
 Do this for men's and women's competitions. 
-
-
