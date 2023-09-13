@@ -10,6 +10,10 @@
 # Run through different possible US team constructions (is there a more efficient way than like looping through them? how to do this?)
 # Simulate US team performance
 
+# Create individual all around scores
+
+# Create team scores (note to self: would we need to simulate through a qualifying round?)
+
 # measure performance of US teams (by calculating a weighted medal count)
 
 # Keep track of which USA team construction performs best

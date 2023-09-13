@@ -1,0 +1,13 @@
+Questions for Brian:
+
+- How should we handle cases where sample size is low --> so st dev is pretty high -->
+so our resulting Normal distribution has a significant tail in scores that seem unfeasible (negatives, very very low like below 5)
+- What to do with cases that have one data point (should we just predict using that score? seems sus?)
+- Good ways to visualize what is going on?
+- I think we're still a little nebulous about simulations. Can you tell us a little
+about how Jennie did it? Might go to her talk but in case I can't
+
+
+Idea:
+- Take competition location, make it just country
+- Run a model predicting score when people are in home country vs not

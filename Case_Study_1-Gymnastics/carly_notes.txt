@@ -1,5 +1,0 @@
--- we are averaging all the vault scores for now, but can revisit later
-
--- things left to do:
--- make some histograms/visualizations
--- write outline for select team file
