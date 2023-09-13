@@ -1,5 +1,8 @@
 Questions for Brian:
 
+- We are still thinking about how to handle the earlier scores. Not everyone has them, 
+so how do we weigh/consider them fairly? (But on a basic level for distributing them we can just use 
+similar method to later scores.)
 - How should we handle cases where sample size is low --> so st dev is pretty high -->
 so our resulting Normal distribution has a significant tail in scores that seem unfeasible (negatives, very very low like below 5)
 - What to do with cases that have one data point (should we just predict using that score? seems sus?)
