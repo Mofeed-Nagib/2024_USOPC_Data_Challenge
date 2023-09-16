@@ -1,5 +1,9 @@
 ## This script predicts scores for each gymnast and apparatus.
 
+#===============================================#
+#=== player score distributions by apparatus ===#
+#===============================================#
+
 # create data frame to hold gymnast names, country, apparatus, score means and sds, and sample size
 gymnast_dist <- data.frame()
 
@@ -18,7 +22,7 @@ for (x in unique(later_scores$fullname)) {
     # get sample size of each gymnast + apparatus combo
     sample_size <- as.numeric(length(gymnast_apparatus_scores$score))
     
-    if (sample_size > 1) {
+    if (sample_size > 1 & sd(gymnast_apparatus_scores$score, na.rm=TRUE) != 0) {
       # take mean of scores
       dist_mean <- mean(gymnast_apparatus_scores$score)
     
@@ -45,11 +49,14 @@ for (i in seq(1, nrow(gymnast_dist))) {
                           "Score Distribution"), xlab = "Scores", col = "blue", breaks = 20)
 }
 
-# subset data from AIC model
-# subset_later_scores <- sample(c(1:nrow(later_scores)), 100)
-# data_sample <- later_scores[subset_later_scores,]
+#============================#
+#=== score prediction lms ===#
+#============================#
 
-# make AIC model
-# lm0 <- lm(score ~ 1, data = data_sample)
-# lm_full <- lm(score ~ ., data = data_sample)
+# # linear model with all predictors
+# lm_full <- lm(score ~ ., data = later_scores)
+#   # evaluation with r-squared
+#   summary(lm_full)
+
+
 # stepAIC(lm_full, scope = formula(lm0), direction = "backward", data = data_sample)
