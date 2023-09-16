@@ -22,9 +22,6 @@ clean_data <- function(in_data) {
   gym_data$country <- gsub("\\<GE1\\>|\\<GE2\\>", "GER", gym_data$country)
   gym_data$country[gym_data$country == ""] <- NA
   
-  # Rename competitions
-  gym_data$competition[gym_data$competition == "World Cup"] <- "FIG Apparatus World Cup 2023"
-  
   # Format gymnast names, fix capitalization
   gym_data <- gym_data %>% mutate(firstname = str_to_title(firstname),
                                   lastname  = str_to_title(lastname))
@@ -40,7 +37,7 @@ clean_data <- function(in_data) {
   
   # Fix apparatus names
   gym_data$apparatus <- gsub("\\<hb\\>", "HB", gym_data$apparatus)
-  gym_data$apparatus <- gsub("\\<VT_1\\>|\\<VT_2\\>|\\<VT1\\>|\\<VT2\\>", "VT", gym_data$apparatus)
+  gym_data$apparatus <- gsub("\\<VT1\\>|\\<VT2\\>", "VT", gym_data$apparatus)
   
   # Fix dates
   gym_data <- gym_data %>%
