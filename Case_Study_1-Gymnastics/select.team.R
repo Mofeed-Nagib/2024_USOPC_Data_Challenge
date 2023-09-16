@@ -36,27 +36,31 @@ women_countries <- c(womens_known_qualifiers, top_women$country)
 
 # determine 5 person teams by taking 5 athletes with highest scores from each country
 men_athletes   <- later_player_scores %>% 
-                  filter(country %in% men_countries & gender == 'm') %>% 
+                  filter(country %in% men_countries & country != 'USA' & gender == 'm') %>% 
                   group_by(country) %>% 
-                  slice_max(avg_score, n = 5)
+                  slice_max(avg_score, n = 5) %>% 
+                  mutate(flag_team = 1)
 
 women_athletes <- later_player_scores %>% 
-                  filter(country %in% women_countries & gender == 'w') %>% 
+                  filter(country %in% women_countries & country != 'USA' & gender == 'w') %>% 
                   group_by(country) %>% 
-                  slice_max(avg_score, n = 5)
+                  slice_max(avg_score, n = 5) %>% 
+                  mutate(flag_team = 1)
 
 # determine the best 36 gymnasts whose teams did not qualify (maximum of 3 individuals per country)
 best_men_dnq   <- later_player_scores %>% 
                   filter(!(country %in% men_countries) & gender == 'm') %>% 
                   group_by(fullname, country) %>% 
                   arrange(-avg_score) %>% 
-                  head(36)
+                  head(36) %>% 
+                  mutate(flag_team = 0)
 
 best_women_dnq <- later_player_scores %>% 
                   filter(!(country %in% women_countries) & gender == 'w') %>% 
                   group_by(fullname, country) %>% 
                   arrange(-avg_score) %>% 
-                  head(36)
+                  head(36) %>% 
+                  mutate(flag_team = 0)
 
 #===================#
 #=== simulations ===#
@@ -85,10 +89,38 @@ col_names <- paste0('simulation_', 1:1000)
 df_male_us_teams[ , col_names]   <- NA
 df_female_us_teams[ , col_names] <- NA
 
-# Run simulations
+# Run female simulations
+# test
+# team_combo <- 1
+for (team_combo in 1:nrow(df_female_us_teams)) {
 
-# In each simulation:
+  # get US athletes
+  current_us_athletes <- data.frame(fullname = as.character(df_female_us_teams[team_combo,1:5]), country = 'USA', flag_team = 1)
+  
+  # making a dataframe of all competing athletes
+  current_athletes <- rbind(women_athletes[,c('fullname', 'country', 'flag_team')],
+                            best_women_dnq[,c('fullname', 'country', 'flag_team')],
+                            current_us_athletes)
+  
+  # for each athlete, get mean scores for each apparatus
+  # define function to get each ath'ete's mean scores for each apparatus
+  # test
+  # in_athlete <- as.character(current_athletes[1, 'fullname'])
+  get_mean_scores <- function(in_athlete) {
+    current_athletes <- current_athletes %>% 
+                        filter(fullname == in_athlete) %>% 
+                        mutate(fx_mean = gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'FX', 'mean'])
+  }
+  
+  ## QUALIFYING ROUND
+  # Rule: 4 of the 5 athletes on each team will compete on each appartus
+  # Individual athletes can compete on all apparatuses, so let's just assume they do that ('worst case')
+  
+  # Pick the 4 athletes for each country that will compete on each apparatus
+  
+  
 
+}
 # Use distributions of earlier/later scores to simulate Olympic performances of other teams
 # Maybe factor in additional considerations: potential injury, experience level. etc??
 

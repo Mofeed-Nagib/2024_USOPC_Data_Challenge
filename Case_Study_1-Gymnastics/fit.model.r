@@ -2,9 +2,9 @@
 
 # create list to hold gymnast means and sds
 ls_gymnast_dist <- list()
-
+gymnast_dist <- data.frame()
 # for each gymnast (unique name)
-for (x in later_scores$fullname) {
+for (x in unique(later_scores$fullname)) {
   
   # grab that gymnast's events
   apparatus = unique(later_scores[later_scores$fullname == x, ]$apparatus)
@@ -27,6 +27,12 @@ for (x in later_scores$fullname) {
       
       # save mean and sd into list 
       ls_gymnast_dist[[x]][[y]] <- c("fullname" = x, "apparatus" = y, "mean" = dist_mean, "sd" = dist_sd, "sample_size" = sample_size)
+      
+      # create row of dataframe
+      current_row <- data.frame("fullname" = x, "apparatus" = y, "mean" = dist_mean, "sd" = dist_sd, "sample_size" = sample_size)
+      
+      # stack onto df
+      gymnast_dist <- rbind(gymnast_dist, current_row)
     }
   }
 }
