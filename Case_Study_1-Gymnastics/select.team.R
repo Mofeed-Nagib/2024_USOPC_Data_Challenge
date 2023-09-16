@@ -1,33 +1,92 @@
 ## This script uses the distributions we created / scores we predicted in previous scripts
 ## to select the optimal gymnastics team!
 
-## select countries that will compete in the Olympics
+#=================================#
+#=== athlete/country selection ===#
+#=================================#
+
+# select countries that will compete in the Olympics
 womens_known_qualifiers <- c('USA', 'CAN', 'GBR')
 mens_known_qualifiers <- c('CHN', 'JPN', 'GBR')
 
-# for each athlete
-# average all of each player's score
-# for teams, select top 5 for each country and sum together to get a team score
-later_player_scores <- later_scores %>% group_by(fullname, country, gender) %>% summarise(avg_score = mean(score))
+# for each athlete, average all of each player's scores
+later_player_scores <- later_scores %>% 
+                       group_by(fullname, country, gender) %>% 
+                       summarise(avg_score = mean(score))
 
-country_sums <- later_player_scores %>% group_by(country, gender) %>% filter(length(unique(fullname)) >= 5 & !is.na(country)) %>% slice_max(avg_score, n = 5) %>% summarise(sum_score = sum(avg_score))
+# for teams, select top 5 avg scores for each country and sum together to get a team score
+country_sums <- later_player_scores %>% 
+                group_by(country, gender) %>% 
+                filter(length(unique(fullname)) >= 5 & !is.na(country)) %>% 
+                slice_max(avg_score, n = 5) %>% 
+                summarise(sum_score = sum(avg_score))
 
-top_men <- country_sums %>% filter(gender == 'm' & !(country %in% mens_known_qualifiers)) %>% arrange(-sum_score) %>% head(9)
-top_women <- country_sums %>% filter(gender == 'w' & !(country %in% womens_known_qualifiers)) %>% arrange(-sum_score) %>% head(9)
+# pick top 9 teams (that haven't already qualified) based on estimated team score
+top_men   <- country_sums %>% 
+             filter(gender == 'm' & !(country %in% mens_known_qualifiers)) %>% 
+             arrange(-sum_score) %>% head(9)
 
-# determine a reasonable set of countries
-men_countries <- c(mens_known_qualifiers, top_men$country)
+top_women <- country_sums %>% 
+             filter(gender == 'w' & !(country %in% womens_known_qualifiers)) %>% 
+             arrange(-sum_score) %>% head(9)
+
+# concatenate countries that have already qualified and our estimated qualifiers
+men_countries   <- c(mens_known_qualifiers, top_men$country)
 women_countries <- c(womens_known_qualifiers, top_women$country)
 
-# determine a reasonable 5 person team for each country
-men_athletes <- later_player_scores %>% filter(country %in% men_countries & gender == 'm') %>% group_by(country) %>% slice_max(avg_score, n = 5)
-women_athletes <- later_player_scores %>% filter(country %in% women_countries & gender == 'w') %>% group_by(country) %>% slice_max(avg_score, n = 5)
+# determine 5 person teams by taking 5 athletes with highest scores from each country
+men_athletes   <- later_player_scores %>% 
+                  filter(country %in% men_countries & gender == 'm') %>% 
+                  group_by(country) %>% 
+                  slice_max(avg_score, n = 5)
+
+women_athletes <- later_player_scores %>% 
+                  filter(country %in% women_countries & gender == 'w') %>% 
+                  group_by(country) %>% 
+                  slice_max(avg_score, n = 5)
 
 # determine the best 36 gymnasts whose teams did not qualify (maximum of 3 individuals per country)
-best_men_dnq <- later_player_scores %>% filter(!(country %in% men_countries) & gender == 'm') %>% group_by(fullname, country) %>% arrange(-avg_score) %>% head(36)
-best_women_dnq <- later_player_scores %>% filter(!(country %in% women_countries) & gender == 'w') %>% group_by(fullname, country) %>% arrange(-avg_score) %>% head(36)
+best_men_dnq   <- later_player_scores %>% 
+                  filter(!(country %in% men_countries) & gender == 'm') %>% 
+                  group_by(fullname, country) %>% 
+                  arrange(-avg_score) %>% 
+                  head(36)
+
+best_women_dnq <- later_player_scores %>% 
+                  filter(!(country %in% women_countries) & gender == 'w') %>% 
+                  group_by(fullname, country) %>% 
+                  arrange(-avg_score) %>% 
+                  head(36)
+
+#===================#
+#=== simulations ===#
+#===================#
+# start by getting names of us male and female athletes
+us_males <- later_scores %>% 
+            filter(country == 'USA' & gender == 'm') %>% 
+            distinct(fullname) %>% 
+            pull(fullname)
+
+us_women <- later_scores %>% 
+            filter(country == 'USA' & gender == 'w') %>% 
+            distinct(fullname) %>% 
+            pull(fullname)
+
+# find all possible 5 person teams for the usa 
+male_us_teams  <- combn(us_males, 5, simplify = F)
+women_us_teams <- combn(us_women, 5, simplify = F)
+
+# convert teams into dataframes 
+df_male_us_teams   <- setNames(as.data.frame(do.call(rbind, male_us_teams)), paste0("athlete_", 1:5))
+df_female_us_teams <- setNames(as.data.frame(do.call(rbind, women_us_teams)), paste0("athlete_", 1:5))
+
+# add columns for simulation results
+col_names <- paste0('simulation_', 1:1000)
+df_male_us_teams[ , col_names]   <- NA
+df_female_us_teams[ , col_names] <- NA
 
 # Run simulations
+
 # In each simulation:
 
 # Use distributions of earlier/later scores to simulate Olympic performances of other teams
