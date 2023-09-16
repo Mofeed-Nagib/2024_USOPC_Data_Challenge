@@ -3,9 +3,6 @@
 in_earlier_scores
 in_later_scores
 
-# things to ask Brian:
-## how do we make a distribution using lack of data points
-
 # Create function to clean data
 clean_data <- function(in_data) {
   
@@ -70,5 +67,5 @@ clean_data <- function(in_data) {
 }
 
 # Run function on both datasets
-# earlier_scores <- clean_data(in_earlier_scores)
+earlier_scores <- clean_data(in_earlier_scores)
 later_scores   <- clean_data(in_later_scores)
