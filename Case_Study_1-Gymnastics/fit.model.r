@@ -53,10 +53,18 @@ for (i in seq(1, nrow(gymnast_dist))) {
 #=== score prediction lms ===#
 #============================#
 
-# # linear model with all predictors
-# lm_full <- lm(score ~ ., data = later_scores)
-#   # evaluation with r-squared
-#   summary(lm_full)
+# separate scores by gender
+men_later_scores <- later_scores[later_scores$gender == "m", c(-1, -2, -3)]
+women_later_scores <- later_scores[later_scores$gender == "w", c(-1, -2, -3)]
 
+# models for men
+men_lm_full <- lm(score ~ ., data = na.omit(men_later_scores))
+men_lm0 <- lm(score ~ 1, data = na.omit(men_later_scores))
+summary(stepAIC(men_lm0, scope = formula(men_lm_full), direction = "forward", data = men_later_scores))$adj.r.squared
+summary(lm(score ~ e_score + d_score + penalty + location + apparatus + date, data = men_later_scores))$adj.r.squared
 
-# stepAIC(lm_full, scope = formula(lm0), direction = "backward", data = data_sample)
+# models for women
+women_lm_full <- lm(score ~ ., data = na.omit(women_later_scores))
+women_lm0 <- lm(score ~ 1, data = na.omit(women_later_scores))
+summary(stepAIC(women_lm0, scope = formula(women_lm_full), direction = "forward", data = women_later_scores))$adj.r.squared
+summary(lm(score ~ e_score + d_score + penalty + country + apparatus + rank, data = women_later_scores))$adj.r.squared
