@@ -1,5 +1,11 @@
 ## This script uses the distributions we created / scores we predicted in previous scripts
 ## to select the optimal gymnastics team!
+#=====================#
+#=== PARAMETERS    ===#
+#=====================#
+
+trials <- 2
+womens_apparatus <- c('fx', 'vt', 'bb', 'ub')
 
 #=================================#
 #=== athlete/country selection ===#
@@ -92,7 +98,8 @@ df_female_us_teams[ , col_names] <- NA
 # Run female simulations
 # test
 # team_combo <- 1
-for (team_combo in 1:nrow(df_female_us_teams)) {
+# only running simulation for two teams for now!!
+for (team_combo in c(1, 2)) {
 
   # get US athletes
   current_us_athletes <- data.frame(fullname = as.character(df_female_us_teams[team_combo,1:5]), country = 'USA', flag_team = 1)
@@ -103,22 +110,80 @@ for (team_combo in 1:nrow(df_female_us_teams)) {
                             current_us_athletes)
   
   # for each athlete, get mean scores for each apparatus
-  # define function to get each ath'ete's mean scores for each apparatus
+  # create loop to get mean scores for each apparatus
+  ## FIX surely we could vectorize this
   # test
-  # in_athlete <- as.character(current_athletes[1, 'fullname'])
-  get_mean_scores <- function(in_athlete) {
-    current_athletes <- current_athletes %>% 
+  # in_athlete <- as.character(current_athletes[2, 'fullname'])
+  athlete_mean_scores <- data.frame()
+  
+  for (in_athlete in unique(current_athletes$fullname)) {
+    
+    # get mean scores
+    fx <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'FX', 'mean']
+    bb <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'BB', 'mean']
+    vt <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'VT', 'mean']
+    ub <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'UB', 'mean']    
+    
+    sd_fx <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'FX', 'sd']
+    sd_bb <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'BB', 'sd']
+    sd_vt <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'VT', 'sd']
+    sd_ub <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'UB', 'sd']  
+    
+    current_row <- current_athletes %>% 
                         filter(fullname == in_athlete) %>% 
-                        mutate(fx_mean = gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'FX', 'mean'])
+                        mutate(fx_mean = ifelse(length(fx) == 1, fx, NA),
+                               bb_mean = ifelse(length(bb) == 1, bb, NA),
+                               vt_mean = ifelse(length(vt) == 1, vt, NA),
+                               ub_mean = ifelse(length(ub) == 1, ub, NA),
+                               fx_sd = ifelse(length(sd_fx) == 1, sd_fx, NA),
+                               bb_sd = ifelse(length(sd_bb) == 1, sd_bb, NA),
+                               vt_sd = ifelse(length(sd_vt) == 1, sd_vt, NA),
+                               ub_sd = ifelse(length(sd_ub) == 1, sd_ub, NA))
+  
+    athlete_mean_scores <- rbind(athlete_mean_scores, current_row)
   }
   
+  
+  
   ## QUALIFYING ROUND
+  # ATHLETE SELECTION
   # Rule: 4 of the 5 athletes on each team will compete on each appartus
-  # Individual athletes can compete on all apparatuses, so let's just assume they do that ('worst case')
-  
   # Pick the 4 athletes for each country that will compete on each apparatus
+  qual_competitors <- list()
   
+  select_qual_competitors <- function(apparatus) {
+    
+    # pick top 4 athletes by country using mean score
+    from_teams <- athlete_mean_scores %>% 
+      filter(flag_team == 1 & !is.na(get(paste0(apparatus, "_mean")))) %>% 
+      group_by(country) %>% 
+      slice_max(order_by = get(paste0(apparatus, "_mean")), n = 4)
+    
+    # dedup in case there were < 4 athletes with a score
+    from_teams <- from_teams[!duplicated(from_teams),]
+    
+    # Individual athletes can compete on all apparatuses, so let's just assume they do that ('worst case')
+    from_individual <- athlete_mean_scores %>% 
+      filter(flag_team == 1 & !is.na(get(paste0(apparatus, "_mean")))) 
+    
+    # stack on the individual qualifiers that have scores for that apparatus
+    qual_apparatus_competitors <- rbind(from_teams, from_individual)
+    
+    # return
+    return(qual_apparatus_competitors)
+  }
+
+  # apply over the apparatuses
+  qual_competitors <- purrr::map(womens_apparatus, select_qual_competitors)
+  names(qual_competitors) <- womens_apparatus
   
+  # QUALIFYING ROUND SIMULATION
+  # now that we have the competitors, we can actually simulate their scores!!!!! wahoo!
+  
+  # simulate one round of scores
+  function
+  # for each athlete, simulate a score
+  # calculate a rank column???
 
 }
 # Use distributions of earlier/later scores to simulate Olympic performances of other teams
