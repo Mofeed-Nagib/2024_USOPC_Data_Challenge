@@ -169,21 +169,52 @@ for (team_combo in c(1, 2)) {
     # stack on the individual qualifiers that have scores for that apparatus
     qual_apparatus_competitors <- rbind(from_teams, from_individual)
     
+    # filter down columns
+    out_qual_competitors <- qual_apparatus_competitors[,c('fullname', 'country', 'flag_team', 
+                                                          paste0(apparatus, "_mean"), paste0(apparatus, "_sd"))]
     # return
-    return(qual_apparatus_competitors)
+    return(out_qual_competitors)
   }
 
   # apply over the apparatuses
-  qual_competitors <- purrr::map(womens_apparatus, select_qual_competitors)
-  names(qual_competitors) <- womens_apparatus
+  ls_qual_competitors <- purrr::map(womens_apparatus, select_qual_competitors)
+  names(ls_qual_competitors) <- womens_apparatus
+  
+  # stack together and clean up 
+  qual_competitors <- as.data.frame(data.table::rbindlist(ls_qual_competitors, fill = TRUE))
+  
+  # collapse rows and deduplicate
+  qual_competitors <- qual_competitors %>% 
+                      group_by(fullname, country, flag_team) %>% 
+                      fill(fx_mean, bb_mean, ub_mean, vt_mean, fx_sd, bb_sd, ub_sd, vt_sd, .direction = 'updown')
+  
+  qual_competitors <- qual_competitors[!duplicated(qual_competitors),]
   
   # QUALIFYING ROUND SIMULATION
   # now that we have the competitors, we can actually simulate their scores!!!!! wahoo!
+  # make working copy
+  simulated_scores <- qual_competitors
   
-  # simulate one round of scores
-  function
-  # for each athlete, simulate a score
-  # calculate a rank column???
+  # trial<- 1
+  for (trial in 1:trials) {
+    
+    simulated_scores <- simulated_scores %>% 
+                        mutate(current_fx_sim = rnorm(1, fx_mean, fx_sd),
+                               current_vt_sim = rnorm(1, vt_mean, vt_sd),
+                               current_bb_sim = rnorm(1, bb_mean, bb_sd),
+                               current_ub_sim = rnorm(1, ub_mean, ub_sd))
+    
+    # rename cols
+    data.table::setnames(simulated_scores, c('current_fx_sim', 'current_vt_sim', 'current_bb_sim', 'current_ub_sim'),
+                                 c(paste0(womens_apparatus, "_", trial)))
+    
+    
+  }
+  
+  # Create individual all around scores
+  
+  # Create team scores (note to self: would we need to simulate through a qualifying round?)
+  
 
 }
 # Use distributions of earlier/later scores to simulate Olympic performances of other teams
