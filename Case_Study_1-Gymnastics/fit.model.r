@@ -60,10 +60,11 @@ women_later_scores <- later_scores[later_scores$gender == "w", c(-1, -2, -3, -11
 # models for men
 men_lm_full <- lm(score ~ ., data = na.omit(men_later_scores))
 men_lm0 <- lm(score ~ 1, data = na.omit(men_later_scores))
-summary(stepAIC(men_lm_full, scope = formula(men_lm0), direction = "backward", data = men_later_scores))$adj.r.squared
+men_forward_AIC <- stepAIC(men_lm0, scope = formula(men_lm_full), direction = "forward", data = men_later_scores)
+summary(men_forward_AIC)$adj.r.squared
 
 # models for women
 women_lm_full <- lm(score ~ ., data = na.omit(women_later_scores))
 women_lm0 <- lm(score ~ 1, data = na.omit(women_later_scores))
-summary(stepAIC(women_lm_full, scope = formula(women_lm0), direction = "backward", data = women_later_scores))$adj.r.squared
-summary(lm(score ~ country + date + competition + round + apparatus + rank, data = women_later_scores))$adj.r.squared
+women_forward_AIC <- stepAIC(women_lm0, scope = formula(women_lm_full), direction = "forward", data = women_later_scores)
+summary(women_forward_AIC)$adj.r.squared
