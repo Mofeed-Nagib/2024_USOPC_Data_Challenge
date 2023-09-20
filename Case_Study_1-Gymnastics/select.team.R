@@ -71,7 +71,7 @@ best_women_dnq <- later_player_scores %>%
 #===================#
 #=== simulations ===#
 #===================#
-# start by getting names of us male and female athletes
+# start by getting names of usa male and female athletes
 us_males <- later_scores %>% 
             filter(country == 'USA' & gender == 'm') %>% 
             distinct(fullname) %>% 
