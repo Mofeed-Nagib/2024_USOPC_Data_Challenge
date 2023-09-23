@@ -90,11 +90,6 @@ women_us_teams <- combn(us_women, 5, simplify = F)
 df_male_us_teams   <- setNames(as.data.frame(do.call(rbind, male_us_teams)), paste0("athlete_", 1:5))
 df_female_us_teams <- setNames(as.data.frame(do.call(rbind, women_us_teams)), paste0("athlete_", 1:5))
 
-# add columns for simulation results
-col_names <- paste0('simulation_', 1:1000)
-df_male_us_teams[ , col_names]   <- NA
-df_female_us_teams[ , col_names] <- NA
-
 # Run female simulations
 # test
 # team_combo <- 1
@@ -149,7 +144,6 @@ for (team_combo in c(1, 2)) {
   # ATHLETE SELECTION
   # Rule: 4 of the 5 athletes on each team will compete on each appartus
   # Pick the 4 athletes for each country that will compete on each apparatus
-  qual_competitors <- list()
   
   select_qual_competitors <- function(apparatus) {
     
@@ -190,34 +184,86 @@ for (team_combo in c(1, 2)) {
   
   qual_competitors <- qual_competitors[!duplicated(qual_competitors),]
   
+  # reorder for visual purposes
+  qual_competitors <- qual_competitors %>% arrange(country)
+  
   # QUALIFYING ROUND SIMULATION
   # now that we have the competitors, we can actually simulate their scores!!!!! wahoo!
   # make working copy
   simulated_scores <- qual_competitors
   
+  # for each simulation
   # trial<- 1
   for (trial in 1:trials) {
     
+    # simulate qualifying scores in each event and create an aa score by summing them
     simulated_scores <- simulated_scores %>% 
                         mutate(current_fx_sim = rnorm(1, fx_mean, fx_sd),
                                current_vt_sim = rnorm(1, vt_mean, vt_sd),
                                current_bb_sim = rnorm(1, bb_mean, bb_sd),
-                               current_ub_sim = rnorm(1, ub_mean, ub_sd))
+                               current_ub_sim = rnorm(1, ub_mean, ub_sd)) %>% 
+                        mutate(current_aa_sim = current_fx_sim + current_vt_sim + current_bb_sim + current_ub_sim)
     
     # rename cols
     data.table::setnames(simulated_scores, c('current_fx_sim', 'current_vt_sim', 'current_bb_sim', 'current_ub_sim'),
                                  c(paste0(womens_apparatus, "_", trial)))
+    data.table::setnames(simulated_scores, 'current_aa_sim', paste0("aa_", trial))
     
     
   }
   
-  # Create individual all around scores
+  # Create team scores 
+  # create list to hold the teams moving on to final
+  teams_in_final <- list()
   
-  # Create team scores (note to self: would we need to simulate through a qualifying round?)
-  
-  # Decide who moves on from qualifying! Create data frames with just those people
+  # for each trial, calculate team scores
+  for (trial in 1:trials) {
+    
+    # 4 up, 3 count rule: only the top 3 scores on each event count for each country
+    bb_scores <- simulated_scores %>% 
+                 filter(flag_team == 1) %>% 
+                 group_by(country) %>% 
+                 slice_max(get(paste0("bb_", trial)), n =3) %>% 
+                 summarise(bb_score = sum(get(paste0("bb_", trial)), na.rm = T))
+    
+    ub_scores <- simulated_scores %>% 
+                 filter(flag_team == 1) %>% 
+                 group_by(country) %>% 
+                 slice_max(get(paste0("ub_", trial)), n =3) %>% 
+                 summarise(ub_score = sum(get(paste0("ub_", trial)), na.rm = T))
+    
+    fx_scores <- simulated_scores %>% 
+                 filter(flag_team == 1) %>% 
+                 group_by(country) %>% 
+                 slice_max(get(paste0("fx_", trial)), n =3) %>% 
+                 summarise(fx_score = sum(get(paste0("fx_", trial)), na.rm = T))
+    
+    vt_scores <- simulated_scores %>% 
+                 filter(flag_team == 1) %>% 
+                 group_by(country) %>% 
+                 slice_max(get(paste0("vt_", trial)), n =3) %>% 
+                 summarise(vt_score = sum(get(paste0("vt_", trial)), na.rm = T))
+   
+    # merge them together into one dataframe so we can sum
+    team_by_apparatus <- bb_scores %>% 
+                         left_join(ub_scores, by = 'country') %>% 
+                         left_join(vt_scores, by = 'country') %>% 
+                         left_join(fx_scores, by = 'country')
+    
+    # sum across rows to get one final team score for the trial
+    team_scores <- team_by_apparatus %>% 
+                   mutate(team_score = bb_score + ub_score + vt_score + fx_score)
+    
+    # select top 8 teams to move on
+    teams_in_final[[paste0("trial_", trial)]] <- team_scores %>% 
+                                                 arrange(desc(team_score)) %>% 
+                                                 head(8) %>% 
+                                                 pull(country)
+  }
   
   # Simulate the final rounds
+  
+  # Now, decide who moves on from qualifying! for  Create data frames with just those people
   
   # Determine who win medals in each of the final rounds
   
