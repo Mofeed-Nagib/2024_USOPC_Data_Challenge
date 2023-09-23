@@ -215,20 +215,15 @@ for (team_combo in c(1, 2)) {
   
   # Create team scores (note to self: would we need to simulate through a qualifying round?)
   
+  # Decide who moves on from qualifying! Create data frames with just those people
+  
+  # Simulate the final rounds
+  
+  # Determine who win medals in each of the final rounds
+  
+  # Use the US outcomes to calculate 'weighted medal count'
+  # gold is worth 3 points, silver 2, bronze 1
+  # save medal count to some sort of output
+  
 
 }
-# Use distributions of earlier/later scores to simulate Olympic performances of other teams
-# Maybe factor in additional considerations: potential injury, experience level. etc??
-
-# Run through different possible US team constructions (is there a more efficient way than like looping through them? how to do this?)
-# Simulate US team performance
-
-# Create individual all around scores
-
-# Create team scores (note to self: would we need to simulate through a qualifying round?)
-
-# measure performance of US teams (by calculating a weighted medal count)
-
-# Keep track of which USA team construction performs best
-
-# At end of simulations, compare performances of different US team constructions
