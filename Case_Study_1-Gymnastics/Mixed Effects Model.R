@@ -1,33 +1,33 @@
-set.seed(1)
+set.seed(12)
 
 d <- later_scores
 
 # Men High Bar
 m_HB <- filter(d, gender=='m' & apparatus=='HB')
-  
+m_HB$country <- factor(m_HB$country)  
 
 k=5
 folds=rep(1:k, length.out=nrow(m_HB))
 m_HB$fold = sample(folds, nrow(m_HB), replace=F)
 
-m_HB$lm1 <- NA
+
 m_HB$lmer1 <- NA
+lmer1<- lmer(score ~ (1|fullname) + round, data = m_HB[train.rows,])
 for(j in 1:k){
   cat(j, "")
   train.rows <- m_HB$fold!=j
   test.rows <- m_HB$fold==j
   
-  # lm1 <- lm(score ~ apparatus + fullname + round, data = d[train.rows,])
-  lmer1<- lmer(score ~ (1|fullname) + round + location, data = m_HB[train.rows,])
+  lmer1<- lmer(score ~ (1|fullname) + round, data = m_HB[train.rows,])
   
-  # d[test.rows,]$lm1 <- predict(lm1, newdata = d[test.rows,], type = 'response')
   m_HB[test.rows,]$lmer1 <- predict(lmer1, newdata = m_HB[test.rows,], type = 'response', allow.new.levels = T)
+
+
 }
-# sqrt(mean(d$lm1 - d$score)^2)
-# error = .033
+# error = .032
 sqrt(mean(m_HB$lmer1 - m_HB$score)^2)
-
-
+AIC_1 <- AIC(lmer1)
+print(AIC_1)
 # Men Pommel Horse
 
 m_PH <- filter(d, gender=='m' & apparatus=='PH')
@@ -37,23 +37,25 @@ k=5
 folds=rep(1:k, length.out=nrow(m_PH))
 m_PH$fold = sample(folds, nrow(m_PH), replace=F)
 
-m_PH$lm1 <- NA
 m_PH$lmer1 <- NA
+lmer2<- lmer(score ~ (1|fullname) + round + location, data = m_PH[train.rows,])
 for(j in 1:k){
   cat(j, "")
   train.rows <- m_PH$fold!=j
   test.rows <- m_PH$fold==j
   
-  # lm1 <- lm(score ~ apparatus + fullname + round, data = d[train.rows,])
+  
   lmer1<- lmer(score ~ (1|fullname) + round + location, data = m_PH[train.rows,])
   
-  # d[test.rows,]$lm1 <- predict(lm1, newdata = d[test.rows,], type = 'response')
   m_PH[test.rows,]$lmer1 <- predict(lmer1, newdata = m_PH[test.rows,], type = 'response', allow.new.levels = T)
+
 }
-# sqrt(mean(d$lm1 - d$score)^2)
+
 # error = .082
 sqrt(mean(m_PH$lmer1 - m_PH$score)^2)
 
+AIC_2 <- AIC(lmer2)
+print(AIC_2)
 # Men Floor
 
 m_FX <- filter(d, gender=='m' & apparatus=='FX')
