@@ -1,0 +1,7 @@
+Known issues:
+  handling ties
+  qualifying for vault final -- need two vaults
+  
+Things I want to do:
+  split men's and women's team selection into separate scripts for readability
+  organize our repo more I feel like we have too many files

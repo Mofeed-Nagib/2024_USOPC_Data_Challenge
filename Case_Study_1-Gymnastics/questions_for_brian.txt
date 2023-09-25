@@ -38,5 +38,3 @@ less than 0. We could also take a Bayesian approach....
     - Instead of a nested for loop, generate all combos of teams (expand.grid) into a dataset
     - Make all combinations of predictions ahead of time
     - Can plug in a vector of means and sds to do simulations in one step 
-
-  

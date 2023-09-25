@@ -69,9 +69,10 @@ best_women_dnq <- later_player_scores %>%
                   head(36) %>% 
                   mutate(flag_team = 0)
 
-#===================#
-#=== simulations ===#
-#===================#
+#=======================#
+#=== FEMALE ATHLETES ===#
+#=======================#
+
 # start by getting names of usa male and female athletes
 us_males <- later_scores %>% 
             filter(country == 'USA' & gender == 'm') %>% 
@@ -90,6 +91,9 @@ women_us_teams <- combn(us_women, 5, simplify = F)
 # convert teams into dataframes 
 df_male_us_teams   <- setNames(as.data.frame(do.call(rbind, male_us_teams)), paste0("athlete_", 1:5))
 df_female_us_teams <- setNames(as.data.frame(do.call(rbind, women_us_teams)), paste0("athlete_", 1:5))
+
+# create list to hold output
+out_medal_winners <- list()
 
 # Run female simulations
 # test
@@ -147,23 +151,27 @@ for (team_combo in c(1, 2)) {
   # Rule: 4 of the 5 athletes on each team will compete on each appartus
   # Pick the 4 athletes for each country that will compete on each apparatus
   
-  select_qual_competitors <- function(apparatus) {
+  select_competitors <- function(apparatus, select_from_data, from_each_country, add_individuals = 1) {
     
-    # pick top 4 athletes by country using mean score
-    from_teams <- athlete_mean_scores %>% 
+    # pick top athletes by country using mean score
+    from_teams <- select_from_data %>% 
       filter(flag_team == 1 & !is.na(get(paste0(apparatus, "_mean")))) %>% 
       group_by(country) %>% 
-      slice_max(order_by = get(paste0(apparatus, "_mean")), n = 4)
+      slice_max(order_by = get(paste0(apparatus, "_mean")), n = from_each_country)
     
     # dedup in case there were < 4 athletes with a score
-    from_teams <- from_teams[!duplicated(from_teams),]
+    qual_apparatus_competitors <- from_teams[!duplicated(from_teams),]
     
+    if (add_individuals == 1) {
+      
     # Individual athletes can compete on all apparatuses, so let's just assume they do that ('worst case')
-    from_individual <- athlete_mean_scores %>% 
+    from_individual <- select_from_data %>% 
       filter(flag_team == 1 & !is.na(get(paste0(apparatus, "_mean")))) 
     
     # stack on the individual qualifiers that have scores for that apparatus
-    qual_apparatus_competitors <- rbind(from_teams, from_individual)
+    qual_apparatus_competitors <- rbind(qual_apparatus_competitors, from_individual)
+    
+    }
     
     # filter down columns
     out_qual_competitors <- qual_apparatus_competitors[,c('fullname', 'country', 'flag_team', 
@@ -173,7 +181,7 @@ for (team_combo in c(1, 2)) {
   }
 
   # apply over the apparatuses
-  ls_qual_competitors <- purrr::map(womens_apparatus, select_qual_competitors)
+  ls_qual_competitors <- purrr::map(womens_apparatus, ~select_competitors(.x, select_from_data = athlete_mean_scores, from_each_country = 4))
   names(ls_qual_competitors) <- womens_apparatus
   
   # stack together and clean up 
@@ -264,17 +272,161 @@ for (team_combo in c(1, 2)) {
   }
   
   # Simulate the final rounds
+  # create function to simulate event finals
+  # test parameters: 
+  # in_apparatus = 'fx'
+  # in_trial_number = 1
+  event_final <- function(in_apparatus, in_trial_number) {
+    
+    # 2 per country rule: can have max of 2 athletes per country in each final
+    sub_simulated_scores <- simulated_scores %>% 
+                            filter(!is.na(get(paste0(in_apparatus, "_", in_trial_number)))) %>% 
+                            group_by(country) %>% 
+                            slice_max(order_by = get(paste0(in_apparatus, "_", in_trial_number)), n = 2)
+    
+    # select top 8 competitors
+    competitors <- sub_simulated_scores %>% 
+                   arrange(desc(get(paste0(in_apparatus, "_", in_trial_number)))) %>% 
+                   head(8)
+    
+    if (in_apparatus != 'aa') {
+        # now simulate final score for each competitor
+        competitors <- competitors %>% 
+                       ungroup() %>% 
+                       mutate(final_score = rnorm(1, get(paste0(in_apparatus, "_mean")),
+                                                  get(paste0(in_apparatus, "_sd"))))
+    } else {
+      
+      # if apparatus is na, we calculate the final score by sampling each apparatus and summing
+      competitors <- competitors %>% 
+                     ungroup() %>% 
+                     mutate(final_score = rnorm(1, vt_mean, vt_sd) +
+                              rnorm(1, fx_mean, fx_sd) +
+                              rnorm(1, bb_mean, bb_sd) +
+                              rnorm(1, ub_mean, ub_sd))
+    }
+        
+    # get the medal winners, add on apparatus as a column
+    winners <- competitors %>% 
+               arrange(desc(final_score)) %>% 
+               head(3) %>% 
+               select(fullname, country, final_score) %>% 
+               mutate(final_type = in_apparatus)
+    
+    # add on medal color as column and subset to us only 
+    out_winners <- data.frame(winners, medal = c('gold', 'silver', 'bronze')) %>% 
+                   filter(country == 'USA')
+    
+    return(out_winners)
+  }
   
-  # Now, decide who moves on from qualifying! for  Create data frames with just those people
+  # create list to hold medal winners
+  ls_medal_winners <- list()
   
-  # Determine who win medals in each of the final rounds
+  # Now, for each trial 
+  # test trial <- 1
+  for (trial in 1:trials) {
+    
+    #=====================#
+    #=== event finals  ===#
+    #=====================#
+    # simulate event finals 
+    vt_final <- event_final('vt', trial)
+    bb_final <- event_final('bb', trial)
+    ub_final <- event_final('ub', trial)
+    fx_final <- event_final('fx', trial)
+    
+    #========================#
+    #=== all around final ===#
+    #========================#
+    aa_final <- event_final('aa', trial)
+    
+    #=====================#
+    #=== team final    ===#
+    #=====================#
+    
+    # subset mean scores dataframe to countries that qualified for the team final
+    sub_mean_scores <- athlete_mean_scores %>% filter(country %in% teams_in_final[[paste0("trial_", trial)]])
+    
+    # now run select competitors function to decide who will compete on what event
+    # 3 athletes compete on each event for each country -- we will pick the 3 with the highest mean score
+    # apply over the apparatuses
+    ls_team_competitors <- purrr::map(womens_apparatus, ~select_competitors(.x, select_from_data = sub_mean_scores, from_each_country = 3, add_individuals = 0))
+    names(ls_team_competitors) <- womens_apparatus
+    
+    # stack together and clean up 
+    team_competitors <- as.data.frame(data.table::rbindlist(ls_team_competitors, fill = TRUE))
+    
+    # collapse rows and deduplicate
+    team_competitors <- team_competitors %>% 
+      group_by(fullname, country, flag_team) %>% 
+      fill(fx_mean, bb_mean, ub_mean, vt_mean, fx_sd, bb_sd, ub_sd, vt_sd, .direction = 'updown')
+    team_competitors <- team_competitors[!duplicated(team_competitors),]
+    
+    # simulate their scores!!
+    team_final <- team_competitors %>% 
+                  mutate(vt_score = rnorm(1, vt_mean, vt_sd),
+                         fx_score = rnorm(1, fx_mean, fx_sd),
+                         bb_score = rnorm(1, bb_mean, bb_sd),
+                         ub_score = rnorm(1, ub_mean, ub_sd))
+    
+    # tally scores by country
+    team_final <- team_final %>% 
+                  group_by(country) %>% 
+                  summarise(final_score = sum(vt_score, na.rm = T) +
+                                          sum(fx_score, na.rm = T) +
+                                          sum(bb_score, na.rm = T) +
+                                          sum(ub_score, na.rm = T)) 
+    
+    # get the team winners, add on apparatus as a column
+    team_winners <- team_final %>% 
+                    arrange(desc(final_score)) %>% 
+                    head(3) %>% 
+                    select(country, final_score) %>% 
+                    mutate(final_type = "team")
+    
+    # add on medal color as column and subset to us only 
+    out_team_winners <- data.frame(team_winners, medal = c('gold', 'silver', 'bronze')) %>% 
+                        filter(country == 'USA')
+    
+    #===============#
+    #=== output ===#
+    #===============#
+    
+    # stack together the us medal results from all finals
+    out_us_results <- plyr::rbind.fill(vt_final, bb_final, ub_final, fx_final, aa_final, out_team_winners)
+
+    # save results to an object
+    ls_medal_winners[[paste0("trial_", trial)]] <- out_us_results
+  }
   
-  # Use the US outcomes to calculate 'weighted medal count'
-  # gold is worth 3 points, silver 2, bronze 1
-  # save medal count to some sort of output
+  # Use the US outcomes to calculate 'weighted medal count' for each trial
+  # test trial <- 2
+  for (trial in 1:trials) {
+    
+    # get medal winners
+    medals <- ls_medal_winners[[paste0("trial_", trial)]]$medal
+    
+    # calculate weighted medal count
+    # gold is worth 3 points, silver 2, bronze 1
+    wt_count <- 3*sum(medals == 'gold') + 2*sum(medals == 'silver') + sum(medals == 'bronze')
+    
+    # add weighted count to dataframe
+    df_female_us_teams[team_combo, paste0('wt_count_trial_', trial)] <- wt_count
+    
+  }
   
+  # save medal winners to an object
+  out_medal_winners[[paste0("team_combo_", team_combo)]] <- ls_medal_winners
 }
 
+
+
+
+
+#=====================#
+#=== MALE ATHLETES ===#
+#=====================#
 
 # Run male simulations
 # test
