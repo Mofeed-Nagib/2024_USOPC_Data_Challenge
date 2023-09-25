@@ -1,5 +1,24 @@
 ## This script sources the sub-scripts needed for our project!
 
+#==================#
+#=== PARAMETERS ===#
+#==================#
+
+# set relevant parameters
+trials <- 2
+n_team_combos <- 2 # if you only want to run some team combos instead of all
+
+womens_apparatus <- c('fx', 'vt', 'bb', 'ub')
+mens_apparatus   <- c('fx', 'vt', 'hb', 'pb', 'sr', 'ph')
+
+# select countries that will compete in the Olympics
+womens_known_qualifiers <- c('USA', 'CAN', 'GBR')
+mens_known_qualifiers   <- c('CHN', 'JPN', 'GBR')
+
+#===================#
+#=== RUN SCRIPTS ===#
+#===================#
+
 # Grab data
 source("Case_Study_1-Gymnastics/00_get_data.r")
 
@@ -11,6 +30,7 @@ source("Case_Study_1-Gymnastics/20_fit_model.r")
 
 # Prepare for team selection (create combinations of teams, etc)
 source("Case_study_2-Gymnastics/30_prepare_to_select.r")
+source("Case_study_2-Gymnastics/35_define_team_selection_functions.r")
 
 # Use predicted scores and additional considerations/probabilities to select team
 source("Case_Study_1-Gymnastics/40_select_female_team.r")

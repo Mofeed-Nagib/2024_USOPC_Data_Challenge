@@ -1,0 +1,1 @@
+# This script defines some helper functions for the team selection / simulation scripts.
