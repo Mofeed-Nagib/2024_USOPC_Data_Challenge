@@ -29,8 +29,8 @@ source("Case_Study_1-Gymnastics/10_prep_data.r")
 source("Case_Study_1-Gymnastics/20_fit_model.r")
 
 # Prepare for team selection (create combinations of teams, etc)
-source("Case_study_2-Gymnastics/30_prepare_to_select.r")
-source("Case_study_2-Gymnastics/35_define_team_selection_functions.r")
+source("Case_Study_1-Gymnastics/30_prepare_to_select.r")
+source("Case_Study_1-Gymnastics/35_define_team_selection_functions.r")
 
 # Use predicted scores and additional considerations/probabilities to select team
 source("Case_Study_1-Gymnastics/40_select_female_team.r")

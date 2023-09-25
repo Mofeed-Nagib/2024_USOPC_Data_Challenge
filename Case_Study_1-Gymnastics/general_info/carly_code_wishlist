@@ -1,6 +1,7 @@
 Things we want to change:
   -(Janson/Mofeed) Evaluate our different score predictions and pick one
-  -Eliminate some combinations of gymnasts that are not realistic (if they haven't competed in years, if they place really low)
+  -(Carly) Eliminate some combinations of gymnasts that are not realistic (if they haven't competed in years, if they place really low)
+  -Improve loop/simulation output
   -Handle tiebreakers
   -Fix the vault qualify
   -Think about a shiny!
