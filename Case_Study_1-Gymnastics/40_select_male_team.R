@@ -65,41 +65,10 @@ for (team_combo in 1:n_team_combos) {
     athlete_mean_scores <- rbind(athlete_mean_scores, current_row)
   }
   
-  
-  
   ## QUALIFYING ROUND
   # ATHLETE SELECTION
   # Rule: 4 of the 5 athletes on each team will compete on each appartus
   # Pick the 4 athletes for each country that will compete on each apparatus
-  
-  select_competitors <- function(apparatus, select_from_data, from_each_country, add_individuals = 1) {
-    
-    # pick top athletes by country using mean score
-    form_teams <- select_from_data %>%
-      filter(flag_team == 1 & !is.na(get(paste0(apparatus, "_mean")))) %>%
-      group_by(country) %>%
-      slice_max(order_by = get(paste0(apparatus, "_mean")), n = from_each_country)
-    
-    # dedup in case there were < 4 athletes with a score
-    qual_apparatus_competitors <- form_teams[!duplicated(form_teams),]
-    
-    if (add_individuals == 1) {
-      
-      # Individual athletes can compete on all apparatuses, so let's just assume they do that ('worst case')
-      form_individuals <- select_from_data %>%
-        filter(flag_team == 1 & !is.na(get(paste0(apparatus, "_mean")))) 
-      
-      # stack on the individual qualifiers that have scores for that apparatus
-      qual_apparatus_competitors <- rbind(qual_apparatus_competitors, form_individuals)
-      
-    }
-    
-    # filter down columns
-    out_qual_competitors <- qual_apparatus_competitors[,c('fullname', 'country', 'flag_team', 
-                                                          paste0(apparatus, "_mean"), paste0(apparatus, "_sd"))]
-    # return
-    return(out_qual_competitors)
-  }
   
   # apply over the apparatuses
   ls_qual_competitors <- purrr::map(mens_apparatus, ~select_competitors(.x, select_from_data = athlete_mean_scores, from_each_country = 4))
@@ -208,56 +177,6 @@ for (team_combo in 1:n_team_combos) {
   }
   
   # Simulate the final rounds
-  # create function to simulate event finals
-  # test parameters: 
-  # in_apparatus = 'fx'
-  # in_trial_number = 1
-  event_final <- function(in_apparatus, in_trial_number) {
-    
-    # 2 per country rule: can have max of 2 athletes per country in each final
-    sub_simulated_scores <- simulated_scores %>% 
-      filter(!is.na(get(paste0(in_apparatus, "_", in_trial_number)))) %>% 
-      group_by(country) %>% 
-      slice_max(order_by = get(paste0(in_apparatus, "_", in_trial_number)), n = 2)
-    
-    # select top 8 competitors
-    competitors <- sub_simulated_scores %>% 
-      arrange(desc(get(paste0(in_apparatus, "_", in_trial_number)))) %>% 
-      head(8)
-    
-    if (in_apparatus != 'aa') {
-      # now simulate final score for each competitor
-      competitors <- competitors %>% 
-        ungroup() %>% 
-        mutate(final_score = rnorm(1, get(paste0(in_apparatus, "_mean")),
-                                   get(paste0(in_apparatus, "_sd"))))
-    } else {
-      
-      # if apparatus is na, we calculate the final score by sampling each apparatus and summing
-      competitors <- competitors %>% 
-        ungroup() %>% 
-        mutate(final_score = rnorm(1, fx_mean, fx_sd) +
-                 rnorm(1, vt_mean, vt_sd) +
-                 rnorm(1, hb_mean, hb_sd) +
-                 rnorm(1, pb_mean, pb_sd) +
-                 rnorm(1, sr_mean, sr_sd) +
-                 rnorm(1, ph_mean, ph_sd))
-    }
-    
-    # get the medal winners, add on apparatus as a column
-    winners <- competitors %>% 
-      arrange(desc(final_score)) %>% 
-      head(3) %>% 
-      select(fullname, country, final_score) %>% 
-      mutate(final_type = in_apparatus)
-    
-    # add on medal color as column and subset to us only 
-    out_winners <- data.frame(winners, medal = c('gold', 'silver', 'bronze')) %>% 
-      filter(country == 'USA')
-    
-    return(out_winners)
-  }
-  
   # create list to hold medal winners
   ls_medal_winners <- list()
   
@@ -270,18 +189,18 @@ for (team_combo in 1:n_team_combos) {
     #====================#
     
     # simulate event finals 
-    fx_final <- event_final('fx', trial)
-    vt_final <- event_final('vt', trial)
-    hb_final <- event_final('hb', trial)
-    pb_final <- event_final('pb', trial)
-    sr_final <- event_final('sr', trial)
-    ph_final <- event_final('ph', trial)
+    fx_final <- event_final('fx', trial, opt_gender = 'm')
+    vt_final <- event_final('vt', trial, opt_gender = 'm')
+    hb_final <- event_final('hb', trial, opt_gender = 'm')
+    pb_final <- event_final('pb', trial, opt_gender = 'm')
+    sr_final <- event_final('sr', trial, opt_gender = 'm')
+    ph_final <- event_final('ph', trial, opt_gender = 'm')
     
     #========================#
     #=== all around final ===#
     #========================#
     
-    aa_final <- event_final('aa', trial)
+    aa_final <- event_final('aa', trial, opt_gender = 'm')
     
     #==================#
     #=== team final ===#
