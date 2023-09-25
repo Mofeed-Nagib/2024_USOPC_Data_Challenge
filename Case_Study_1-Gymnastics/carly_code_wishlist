@@ -1,7 +1,7 @@
-Known issues:
-  handling ties
-  qualifying for vault final -- need two vaults
-  
-Things I want to do:
-  split men's and women's team selection into separate scripts for readability
-  organize our repo more I feel like we have too many files
+Things we want to change:
+  -(Carly) Re-organize our repo, split up select team scripts
+  -(Janson/Mofeed) Evaluate our different score predictions and pick one
+  -Eliminate some combinations of gymnasts that are not realistic (if they haven't competed in years, if they place really low)
+  -Handle tiebreakers
+  -Fix the vault qualify
+  -Think about a shiny!
