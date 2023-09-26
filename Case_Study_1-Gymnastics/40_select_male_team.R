@@ -1,9 +1,12 @@
-#=====================#
-#=== MALE ATHLETES ===#
-#=====================#
+## This script uses the distributions we created / scores we predicted in previous scripts
+## to select the optimal male gymnastics team!
 
 # create list to hold output
 out_male_medal_winners <- list()
+
+#=====================#
+#=== MALE ATHLETES ===#
+#=====================#
 
 # Run male simulations
 # test
