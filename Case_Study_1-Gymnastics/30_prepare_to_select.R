@@ -60,9 +60,9 @@ best_women_dnq <- later_player_scores %>%
   head(36) %>% 
   mutate(flag_team = 0)
 
-#===================================#
-#=== create us team combinations ===#
-#===================================#
+#=======================#
+#=== get us athletes ===#
+#=======================#
 
 # start by getting names of usa male and female athletes
 us_males <- later_scores %>% 
@@ -75,15 +75,41 @@ us_women <- later_scores %>%
   distinct(fullname) %>% 
   pull(fullname)
 
-# find all possible 5 person teams for the usa 
-male_us_teams  <- combn(us_males, 5, simplify = F)
-women_us_teams <- combn(us_women, 5, simplify = F)
-
-# convert teams into dataframes 
-df_male_us_teams   <- setNames(as.data.frame(do.call(rbind, male_us_teams)), paste0("athlete_", 1:5))
-df_female_us_teams <- setNames(as.data.frame(do.call(rbind, women_us_teams)), paste0("athlete_", 1:5))
-
 #===============================#
 #=== pare down combinations ===#
 #===============================#
 
+# get list of athletes that haven't competed in 1 year
+expired_players <- later_scores %>% 
+                   filter(country == 'USA') %>% 
+                   group_by(fullname) %>% 
+                   summarise(most_recent_compete = max(date, na.rm = T)) %>% 
+                   filter(most_recent_compete < ymd(Sys.Date()) - years(1)) %>% 
+                   pull(fullname)
+
+# remove them from our bank of us athletes
+sub_us_males <- us_males[!(us_males %in% expired_players)]
+
+sub_us_women <- us_women[!(us_women %in% expired_players)]
+
+# now, we'll cut some people out based on score
+cut_scores <- later_scores %>% 
+              filter(country == 'USA') %>% 
+              group_by(fullname) %>% 
+              filter(min(rank) >= 10) %>% 
+              pull(fullname)
+
+sub_us_males <- sub_us_males[!(sub_us_males %in% cut_scores)]
+
+sub_us_women <- sub_us_women[!(sub_us_women %in% cut_scores)]
+#====================================#
+#=== create us team combinations ===#
+#====================================#
+
+# find all possible 5 person teams for the usa 
+male_us_teams  <- combn(sub_us_males, 5, simplify = F)
+women_us_teams <- combn(sub_us_women, 5, simplify = F)
+
+# convert teams into dataframes 
+df_male_us_teams   <- setNames(as.data.frame(do.call(rbind, male_us_teams)), paste0("athlete_", 1:5))
+df_female_us_teams <- setNames(as.data.frame(do.call(rbind, women_us_teams)), paste0("athlete_", 1:5))
