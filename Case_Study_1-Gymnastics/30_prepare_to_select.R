@@ -102,6 +102,7 @@ cut_scores <- later_scores %>%
 sub_us_males <- sub_us_males[!(sub_us_males %in% cut_scores)]
 
 sub_us_women <- sub_us_women[!(sub_us_women %in% cut_scores)]
+
 #====================================#
 #=== create us team combinations ===#
 #====================================#

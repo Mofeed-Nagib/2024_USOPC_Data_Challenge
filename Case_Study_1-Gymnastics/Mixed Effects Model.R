@@ -24,8 +24,8 @@ for(j in 1:k){
 
 
 }
-# error = .032
-sqrt(mean(m_HB$lmer1 - m_HB$score)^2)
+# error = 1.36
+sqrt(mean((m_HB$lmer1 - m_HB$score)^2))
 AIC_1 <- AIC(lmer1)
 print(AIC_1)
 # Men Pommel Horse
