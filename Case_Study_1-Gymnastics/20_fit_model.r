@@ -47,13 +47,10 @@ for (i in 1:nrow(later_scores)) {
     }
 }
 
-for (i in 1:nrow(later_scores)) {
-  if (is.na(later_scores$distscore[i])) {
-    later_scores$distscore[i] = 0
-  }
-}
-#error = 1.86
-sqrt(mean(later_scores$distscore - later_scores$score)^2)
+later_scores <- later_scores %>% 
+                mutate(distscore = ifelse(is.na(distscore), 0, distscore))
+#error = 4.86
+sqrt(mean((later_scores$distscore - later_scores$score)^2))
 
 # make histograms of gymnast distribution by apparatus
 for (i in seq(1, nrow(gymnast_dist))) {
