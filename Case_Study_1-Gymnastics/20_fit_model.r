@@ -37,6 +37,23 @@ for (x in unique(later_scores$fullname)) {
     }
   }
 }
+# Check mean squared error
+
+later_scores$distscore <- NA
+for (i in 1:nrow(later_scores)) {
+  for (j in 1:nrow(gymnast_dist))
+    if (later_scores$fullname[i] == gymnast_dist$fullname[j] & later_scores$apparatus[i] == gymnast_dist$apparatus[j]) {
+      later_scores$distscore[i] <- gymnast_dist$mean[j]
+    }
+}
+
+for (i in 1:nrow(later_scores)) {
+  if (is.na(later_scores$distscore[i])) {
+    later_scores$distscore[i] = 0
+  }
+}
+#error = 1.86
+sqrt(mean(later_scores$distscore - later_scores$score)^2)
 
 # make histograms of gymnast distribution by apparatus
 for (i in seq(1, nrow(gymnast_dist))) {
