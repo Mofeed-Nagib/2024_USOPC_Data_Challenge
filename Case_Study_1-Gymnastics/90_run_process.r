@@ -5,7 +5,7 @@
 #==================#
 
 # set relevant parameters
-trials <- 100
+trials <- 10
 n_team_combos <- NA # if you only want to run some team combos instead of all
 
 womens_apparatus <- c('fx', 'vt', 'bb', 'ub')
