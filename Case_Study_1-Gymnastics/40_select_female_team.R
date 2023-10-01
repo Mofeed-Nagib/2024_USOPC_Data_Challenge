@@ -4,6 +4,42 @@
 # create list to hold output
 out_female_medal_winners <- list()
 
+# making a dataframe of all competing athletes
+all_female_athletes <- rbind(women_athletes[,c('fullname', 'country', 'flag_team')],
+                          best_women_dnq[,c('fullname', 'country', 'flag_team')],
+                          data.frame(fullname = sub_us_women, country = 'USA', flag_team = 1))
+
+# for each athlete, get mean scores for each apparatus
+women_mean_scores <- data.frame()
+
+for (in_athlete in unique(all_female_athletes$fullname)) {
+  
+  # get mean scores
+  fx <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'FX', 'mean']
+  bb <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'BB', 'mean']
+  vt <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'VT', 'mean']
+  ub <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'UB', 'mean']    
+  
+  # get sd scores
+  sd_fx <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'FX', 'sd']
+  sd_bb <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'BB', 'sd']
+  sd_vt <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'VT', 'sd']
+  sd_ub <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'UB', 'sd']  
+  
+  current_row <- all_female_athletes %>% 
+    filter(fullname == in_athlete) %>% 
+    mutate(fx_mean = ifelse(length(fx) == 1, fx, NA),
+           bb_mean = ifelse(length(bb) == 1, bb, NA),
+           vt_mean = ifelse(length(vt) == 1, vt, NA),
+           ub_mean = ifelse(length(ub) == 1, ub, NA),
+           fx_sd = ifelse(length(sd_fx) == 1, sd_fx, NA),
+           bb_sd = ifelse(length(sd_bb) == 1, sd_bb, NA),
+           vt_sd = ifelse(length(sd_vt) == 1, sd_vt, NA),
+           ub_sd = ifelse(length(sd_ub) == 1, sd_ub, NA))
+  
+  women_mean_scores <- rbind(women_mean_scores, current_row)
+}
+
 #=======================#
 #=== FEMALE ATHLETES ===#
 #=======================#
@@ -12,54 +48,14 @@ out_female_medal_winners <- list()
 # test
 # team_combo <- 1
 # only running simulation for two teams for now!!
-if (is.na(n_team_combos)) {n_team_combos <- nrow(df_male_us_teams)}
+if (is.na(n_team_combos)) {n_team_combos <- nrow(df_female_us_teams)}
 
 for (team_combo in 1:n_team_combos) {
+  # print statement
+  print(paste0("Running simulation ", team_combo, " out of ", n_team_combos))
 
-  # get US athletes
-  current_us_athletes <- data.frame(fullname = as.character(df_female_us_teams[team_combo,1:5]), country = 'USA', flag_team = 1)
-  
-  # making a dataframe of all competing athletes
-  current_athletes <- rbind(women_athletes[,c('fullname', 'country', 'flag_team')],
-                            best_women_dnq[,c('fullname', 'country', 'flag_team')],
-                            current_us_athletes)
-  
-  # for each athlete, get mean scores for each apparatus
-  # create loop to get mean scores for each apparatus
-  ## FIX surely we could vectorize this
-  # test
-  # in_athlete <- as.character(current_athletes[2, 'fullname'])
-  athlete_mean_scores <- data.frame()
-  
-  for (in_athlete in unique(current_athletes$fullname)) {
-    
-    # get mean scores
-    fx <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'FX', 'mean']
-    bb <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'BB', 'mean']
-    vt <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'VT', 'mean']
-    ub <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'UB', 'mean']    
-    
-    # get sd scores
-    sd_fx <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'FX', 'sd']
-    sd_bb <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'BB', 'sd']
-    sd_vt <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'VT', 'sd']
-    sd_ub <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'UB', 'sd']  
-    
-    current_row <- current_athletes %>% 
-                   filter(fullname == in_athlete) %>% 
-                   mutate(fx_mean = ifelse(length(fx) == 1, fx, NA),
-                          bb_mean = ifelse(length(bb) == 1, bb, NA),
-                          vt_mean = ifelse(length(vt) == 1, vt, NA),
-                          ub_mean = ifelse(length(ub) == 1, ub, NA),
-                          fx_sd = ifelse(length(sd_fx) == 1, sd_fx, NA),
-                          bb_sd = ifelse(length(sd_bb) == 1, sd_bb, NA),
-                          vt_sd = ifelse(length(sd_vt) == 1, sd_vt, NA),
-                          ub_sd = ifelse(length(sd_ub) == 1, sd_ub, NA))
-  
-    athlete_mean_scores <- rbind(athlete_mean_scores, current_row)
-  }
-  
-  
+  # subset down our dataframe to only have current us athletes and the international competitors
+  athlete_mean_scores <- women_mean_scores %>% filter(country != 'USA' | fullname %in% as.character(df_female_us_teams[team_combo,1:5]))
   
   ## QUALIFYING ROUND
   # ATHLETE SELECTION
@@ -88,33 +84,28 @@ for (team_combo in 1:n_team_combos) {
   # make working copy
   simulated_scores <- qual_competitors
   
-  # for each simulation
-  # trial<- 1
-  for (trial in 1:trials) {
-    
-    # simulate qualifying scores in each event and create an aa score by summing them
-    simulated_scores <- simulated_scores %>% 
-                        mutate(current_fx_sim = rnorm(1, fx_mean, fx_sd),
-                               current_vt_sim = rnorm(1, vt_mean, vt_sd),
-                               current_bb_sim = rnorm(1, bb_mean, bb_sd),
-                               current_ub_sim = rnorm(1, ub_mean, ub_sd)) %>% 
-                        mutate(current_aa_sim = current_fx_sim + current_vt_sim + current_bb_sim + current_ub_sim)
-    
-    # rename cols
-    data.table::setnames(simulated_scores, c('current_fx_sim', 'current_vt_sim', 'current_bb_sim', 'current_ub_sim'),
-                                 c(paste0(womens_apparatus, "_", trial)))
-    data.table::setnames(simulated_scores, 'current_aa_sim', paste0("aa_", trial))
-    
-    
-  }
+  # now actually simulate
+  simulated_scores <- simulated_scores %>%
+                      rowwise() %>%
+                      mutate(current_fx_sim = list(setNames(rnorm(trials, fx_mean, fx_sd), paste0('fx_', 1:trials))),
+                             current_vt_sim = list(setNames(rnorm(trials, vt_mean, vt_sd), paste0('vt_', 1:trials))),
+                             current_bb_sim = list(setNames(rnorm(trials, bb_mean, bb_sd), paste0('bb_', 1:trials))),
+                             current_ub_sim = list(setNames(rnorm(trials, ub_mean, ub_sd), paste0('ub_', 1:trials)))) %>%
+                      unnest_wider(current_fx_sim) %>% 
+                      unnest_wider(current_vt_sim) %>% 
+                      unnest_wider(current_bb_sim) %>% 
+                      unnest_wider(current_ub_sim)
   
   # Create team scores 
   # create list to hold the teams moving on to final
   teams_in_final <- list()
   
-  # for each trial, calculate team scores
+  # for each trial, calculate team scores and aa scores
   for (trial in 1:trials) {
     
+    simulated_scores <- simulated_scores %>% 
+                        mutate(!!as.name(paste0("aa_", trial)) := get(paste0("bb_", trial)) + get(paste0("ub_", trial)) + get(paste0("vt_", trial)) + get(paste0("fx_", trial)))
+                        
     # 4 up, 3 count rule: only the top 3 scores on each event count for each country
     bb_scores <- simulated_scores %>% 
                  filter(flag_team == 1) %>% 

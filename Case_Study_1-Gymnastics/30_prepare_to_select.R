@@ -92,16 +92,37 @@ sub_us_males <- us_males[!(us_males %in% expired_players)]
 
 sub_us_women <- us_women[!(us_women %in% expired_players)]
 
-# now, we'll cut some people out based on score
-cut_scores <- later_scores %>% 
-              filter(country == 'USA') %>% 
-              group_by(fullname) %>% 
-              filter(min(rank) >= 10) %>% 
-              pull(fullname)
+# now, we'll cut some people out based on score!
+# take people who have been in top 8 aa or by apparatus
+keep_scores_waa <- later_scores %>% 
+                  filter(country == 'USA' & gender == 'w') %>% 
+                  group_by(fullname) %>% 
+                  summarize(avg_aa = mean(score)) %>% 
+                  arrange(desc(avg_aa)) %>% head(5) %>% pull(fullname)
 
-sub_us_males <- sub_us_males[!(sub_us_males %in% cut_scores)]
+keep_scores_maa <- later_scores %>% 
+                  filter(country == 'USA' & gender == 'm') %>% 
+                  group_by(fullname) %>% 
+                  summarize(avg_aa = mean(score)) %>% 
+                  arrange(desc(avg_aa)) %>% head(5) %>% pull(fullname)   
 
-sub_us_women <- sub_us_women[!(sub_us_women %in% cut_scores)]
+keep_scores_wapp <- later_scores %>% 
+                   filter(country == 'USA' & gender == 'w') %>% 
+                   group_by(fullname, apparatus) %>% 
+                   summarize(avg = mean(score)) %>% 
+                   ungroup() %>% group_by(apparatus) %>% 
+                   slice_max(order_by = avg, n = 5) %>% pull(fullname)
+
+keep_scores_mapp <- later_scores %>% 
+                   filter(country == 'USA' & gender == 'm') %>% 
+                   group_by(fullname, apparatus) %>% 
+                   summarize(avg = mean(score)) %>% 
+                   ungroup() %>% group_by(apparatus) %>% 
+                   slice_max(order_by = avg, n = 5) %>% pull(fullname)
+              
+
+sub_us_males <- sub_us_males[sub_us_males %in% c(keep_scores_maa, keep_scores_mapp)]
+sub_us_women <- sub_us_women[sub_us_women %in% c(keep_scores_waa, keep_scores_wapp)]
 
 #====================================#
 #=== create us team combinations ===#
