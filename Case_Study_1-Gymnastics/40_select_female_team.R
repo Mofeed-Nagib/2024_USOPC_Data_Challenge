@@ -196,8 +196,17 @@ for (team_combo in 1:n_team_combos) {
   # create list to hold medal winners
   ls_medal_winners <- list()
   
-  # need to somehow right here set smallest us score to NA by apparatus
-  sub_team_scores <- sub_team_scores #?
+  # us team selection
+  vt_min <- sub_team_scores %>% filter(country == 'USA') %>% slice_min(order_by = vt_mean, n = 1) %>% pull(fullname)
+  fx_min <- sub_team_scores %>% filter(country == 'USA') %>% slice_min(order_by = fx_mean, n = 1) %>% pull(fullname)
+  bb_min <- sub_team_scores %>% filter(country == 'USA') %>% slice_min(order_by = bb_mean, n = 1) %>% pull(fullname)
+  ub_min <- sub_team_scores %>% filter(country == 'USA') %>% slice_min(order_by = ub_mean, n = 1) %>% pull(fullname)
+  
+  sub_team_scores[fullname == vt_min,startsWith(colnames(sub_team_scores),"vt")] <- NA
+  sub_team_scores[fullname == fx_min,startsWith(colnames(sub_team_scores),"fx")] <- NA
+  sub_team_scores[fullname == bb_min,startsWith(colnames(sub_team_scores),"bb")] <- NA
+  sub_team_scores[fullname == ub_min,startsWith(colnames(sub_team_scores),"ub")] <- NA
+  
   # Now, for each trial 
   # test trial <- 1
   for (trial in 1:trials) {
