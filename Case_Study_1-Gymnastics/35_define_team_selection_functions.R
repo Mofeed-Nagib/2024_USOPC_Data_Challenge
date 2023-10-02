@@ -17,7 +17,7 @@ select_competitors <- function(apparatus, select_from_data, from_each_country, a
     
     # Individual athletes can compete on all apparatuses, so let's just assume they do that ('worst case')
     form_individuals <- select_from_data %>%
-      filter(flag_team == 1 & !is.na(get(paste0(apparatus, "_mean")))) 
+      filter(flag_team == 0 & !is.na(get(paste0(apparatus, "_mean")))) 
     
     # stack on the individual qualifiers that have scores for that apparatus
     qual_apparatus_competitors <- rbind(qual_apparatus_competitors, form_individuals)
@@ -45,37 +45,35 @@ event_final <- function(in_apparatus, in_trial_number, opt_gender) {
     slice_max(order_by = get(paste0(in_apparatus, "_", in_trial_number)), n = 2)
   
   # select top 8 competitors
-  competitors <- sub_simulated_scores %>% 
+  sel_competitors <- sub_simulated_scores %>% 
     arrange(desc(get(paste0(in_apparatus, "_", in_trial_number)))) %>% 
-    head(8)
+    head(8) %>% pull(fullname)
   
   if (in_apparatus != 'aa') {
-    # now simulate final score for each competitor
-    competitors <- competitors %>% 
-      ungroup() %>% 
-      mutate(final_score = rnorm(1, get(paste0(in_apparatus, "_mean")),
-                                 get(paste0(in_apparatus, "_sd"))))
+    # get final score for each competitor
+    competitors <- sub_event_scores %>% filter(fullname %in% sel_competitors) %>% select(c('fullname', 'country', paste0(in_apparatus, "_", in_trial_number)))
+    data.table::setnames(competitors, paste0(in_apparatus, "_", in_trial_number), 'final_score')
   } else if (opt_gender == 'w') {
     
     # if apparatus is aa, we calculate the final score by sampling each apparatus and summing
-    competitors <- competitors %>% 
-      ungroup() %>% 
-      mutate(final_score = rnorm(1, vt_mean, vt_sd) +
-               rnorm(1, fx_mean, fx_sd) +
-               rnorm(1, bb_mean, bb_sd) +
-               rnorm(1, ub_mean, ub_sd))
+    competitors <- sub_aa_scores %>% 
+      filter(fullname %in% sel_competitors) %>% 
+      mutate(final_score = get(paste0('vt_', in_trial_number)) +
+      get(paste0('fx_', in_trial_number)) +
+      get(paste0('bb_', in_trial_number)) +
+      get(paste0('ub_', in_trial_number)))
     
   } else if (opt_gender == 'm') {
 
       # if apparatus is aa, we calculate the final score by sampling each apparatus and summing
-      competitors <- competitors %>% 
-        ungroup() %>% 
-        mutate(final_score = rnorm(1, fx_mean, fx_sd) +
-                 rnorm(1, vt_mean, vt_sd) +
-                 rnorm(1, hb_mean, hb_sd) +
-                 rnorm(1, pb_mean, pb_sd) +
-                 rnorm(1, sr_mean, sr_sd) +
-                 rnorm(1, ph_mean, ph_sd))
+      competitors <- sub_aa_scores %>% 
+        filter(fullname %in% sel_competitors) %>% 
+        mutate(final_score = get(paste0('vt_', in_trial_number)) +
+                 get(paste0('fx_', in_trial_number)) +
+                 get(paste0('hb_', in_trial_number)) +
+                 get(paste0('pb_', in_trial_number)) +
+                 get(paste0('sr_', in_trial_number)) +
+                 get(paste0('ph_', in_trial_number)))
       
   }
   
@@ -92,3 +90,12 @@ event_final <- function(in_apparatus, in_trial_number, opt_gender) {
   
   return(out_winners)
 }
+
+# create function to calculate weighted medal count
+medal_count <- function(in_list_item) {
+  medals <- in_list_item$medal
+  wt_count <- 3*sum(medals == 'gold') + 2*sum(medals == 'silver') + sum(medals == 'bronze')
+  # add weighted count to dataframe
+  df_female_us_teams[team_combo, paste0('wt_count_trial_', trial)] <- wt_count
+}
+

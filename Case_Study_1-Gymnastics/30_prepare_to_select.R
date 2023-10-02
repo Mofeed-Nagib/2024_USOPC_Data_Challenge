@@ -118,7 +118,7 @@ keep_scores_mapp <- later_scores %>%
                    group_by(fullname, apparatus) %>% 
                    summarize(avg = mean(score)) %>% 
                    ungroup() %>% group_by(apparatus) %>% 
-                   slice_max(order_by = avg, n = 5) %>% pull(fullname)
+                   slice_max(order_by = avg, n = 3) %>% pull(fullname)
               
 
 sub_us_males <- sub_us_males[sub_us_males %in% c(keep_scores_maa, keep_scores_mapp)]
