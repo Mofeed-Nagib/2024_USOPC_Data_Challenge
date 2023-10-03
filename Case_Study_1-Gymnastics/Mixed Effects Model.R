@@ -24,7 +24,7 @@ for(j in 1:k){
 
 
 }
-# error = 1.36
+# error = 1.39
 sqrt(mean((m_HB$lmer1 - m_HB$score)^2))
 AIC_1 <- AIC(lmer1)
 print(AIC_1)
@@ -51,8 +51,9 @@ for(j in 1:k){
 
 }
 
-# error = .082
-sqrt(mean(m_PH$lmer1 - m_PH$score)^2)
+# error = 1.53
+sqrt(mean((m_PH$lmer1 - m_PH$score)^2))
+
 
 AIC_2 <- AIC(lmer2)
 print(AIC_2)
@@ -79,8 +80,9 @@ for(j in 1:k){
   m_FX[test.rows,]$lmer1 <- predict(lmer1, newdata = m_FX[test.rows,], type = 'response', allow.new.levels = T)
 }
 # sqrt(mean(d$lm1 - d$score)^2)
-# error = .011
-sqrt(mean(m_FX$lmer1 - m_FX$score)^2)
+# error = 1.43
+sqrt(mean((m_FX$lmer1 - m_FX$score)^2))
+
 
 # Men Parallel Bars
 
@@ -105,8 +107,8 @@ for(j in 1:k){
   m_PB[test.rows,]$lmer1 <- predict(lmer1, newdata = m_PB[test.rows,], type = 'response', allow.new.levels = T)
 }
 # sqrt(mean(d$lm1 - d$score)^2)
-# error = .032
-sqrt(mean(m_PB$lmer1 - m_PB$score)^2)
+# error = 1.27
+sqrt(mean((m_PB$lmer1 - m_PB$score)^2))
 
 # Men Rings
 
@@ -131,8 +133,8 @@ for(j in 1:k){
   m_SR[test.rows,]$lmer1 <- predict(lmer1, newdata = m_SR[test.rows,], type = 'response', allow.new.levels = T)
 }
 # sqrt(mean(d$lm1 - d$score)^2)
-# error = .065
-sqrt(mean(m_SR$lmer1 - m_SR$score)^2)
+# error = 1.28
+sqrt(mean((m_SR$lmer1 - m_SR$score)^2))
 
 # Men Vault
 
@@ -157,8 +159,8 @@ for(j in 1:k){
   m_VT[test.rows,]$lmer1 <- predict(lmer1, newdata = m_VT[test.rows,], type = 'response', allow.new.levels = T)
 }
 # sqrt(mean(d$lm1 - d$score)^2)
-# error = .005
-sqrt(mean(m_VT$lmer1 - m_VT$score)^2)
+# error = 2.26
+sqrt(mean((m_VT$lmer1 - m_VT$score)^2))
 
 
 # Women Balance Beam
@@ -184,8 +186,8 @@ for(j in 1:k){
   w_BB[test.rows,]$lmer1 <- predict(lmer1, newdata = w_BB[test.rows,], type = 'response', allow.new.levels = T)
 }
 # sqrt(mean(d$lm1 - d$score)^2)
-# error = .061
-sqrt(mean(w_BB$lmer1 - w_BB$score)^2)
+# error = .99
+sqrt(mean((w_BB$lmer1 - w_BB$score)^2))
 
 
 # Women Floor
@@ -211,8 +213,8 @@ for(j in 1:k){
   w_FX[test.rows,]$lmer1 <- predict(lmer1, newdata = w_FX[test.rows,], type = 'response', allow.new.levels = T)
 }
 # sqrt(mean(d$lm1 - d$score)^2)
-# error = .064
-sqrt(mean(w_FX$lmer1 - w_FX$score)^2)
+# error = .94
+sqrt(mean((w_FX$lmer1 - w_FX$score)^2))
 
 # Women Unbalanced Beam
 
@@ -237,8 +239,8 @@ for(j in 1:k){
   w_UB[test.rows,]$lmer1 <- predict(lmer1, newdata = w_UB[test.rows,], type = 'response', allow.new.levels = T)
 }
 # sqrt(mean(d$lm1 - d$score)^2)
-# error = .11
-sqrt(mean(w_UB$lmer1 - w_UB$score)^2)
+# error = 1.17
+sqrt(mean((w_UB$lmer1 - w_UB$score)^2))
 
 # Women Vault
 
@@ -263,5 +265,5 @@ for(j in 1:k){
   w_VT[test.rows,]$lmer1 <- predict(lmer1, newdata = w_VT[test.rows,], type = 'response', allow.new.levels = T)
 }
 # sqrt(mean(d$lm1 - d$score)^2)
-# error = .002
-sqrt(mean(w_VT$lmer1 - w_VT$score)^2)
+# error = 1.88
+sqrt(mean((w_VT$lmer1 - w_VT$score)^2))

@@ -47,14 +47,14 @@ for (i in 1:nrow(later_scores)) {
     }
 }
 
-later_scores <- later_scores %>% 
+later_scores <- later_scores %>%
                 mutate(distscore = ifelse(is.na(distscore), 0, distscore))
 #error = 4.86
 sqrt(mean((later_scores$distscore - later_scores$score)^2))
 
 # make histograms of gymnast distribution by apparatus
 for (i in seq(1, nrow(gymnast_dist))) {
-  
+
   # generate 10000 Gaussian deviates from mean and standard deviation
   data = rnorm(10000, mean = as.numeric(gymnast_dist[i, 'mean']), sd = as.numeric(gymnast_dist[i, 'sd']))
 
@@ -82,25 +82,27 @@ folds=rep(1:k, length.out=nrow(men_later_scores))
 men_later_scores$fold = sample(folds, nrow(men_later_scores), replace=F)
 
 lm1 = lm(score ~ location + country, data = men_later_scores)
+men_later_scores$lm1 <- NA
 for(j in 1:k){
   cat(j, "")
   train.rows <- men_later_scores$fold!=j
   test.rows <- men_later_scores$fold==j
-  
-  
+
+
   lm1 = lm(score ~ location + country, data = men_later_scores)
-  
+
   men_later_scores[test.rows,]$lm1 <- predict(lm1, newdata = men_later_scores[test.rows,], type = 'response', allow.new.levels = T)
-  
+
 }
 # best AIC = 5155
-men_forward_AIC <- stepAIC(men_lm0, scope = formula(men_lm_full), direction = "forward", data = men_later_scores)
+# men_forward_AIC <- stepAIC(men_lm0, scope = formula(men_lm_full), direction = "forward", data = men_later_scores)
 
 
-men_later_scores <- men_later_scores %>% mutate(lm1 = if_else(is.na(lm1), 0, lm1)) %>% 
+men_later_scores <- men_later_scores %>% mutate(lm1 = if_else(is.na(lm1), 0, lm1)) %>%
   mutate(score = if_else(is.na(score), 0, score))
-# 0.22
-sqrt(mean(men_later_scores$lm1 - men_later_scores$score)^2)
+# 2.43
+sqrt(mean((men_later_scores$lm1 - men_later_scores$score)^2))
+
 
 # models for women
 women_lm_full <- lm(score ~ ., data = na.omit(women_later_scores))
@@ -118,14 +120,14 @@ for(j in 1:k){
   cat(j, "")
   train.rows <- women_later_scores$fold!=j
   test.rows <- women_later_scores$fold==j
-  
-  
+
+
   lm2 = lm(score ~ fullname + rank + competition + apparatus + round + date, data = women_later_scores)
-  
+
   women_later_scores[test.rows,]$lm2 <- predict(lm2, newdata = women_later_scores[test.rows,], type = 'response', allow.new.levels = T)
-  
+
 }
 women_forward_AIC <- stepAIC(women_lm0, scope = formula(women_lm_full), direction = "forward", data = women_later_scores)
-women_later_scores <- women_later_scores %>% mutate(lm1 = if_else(is.na(lm1), 0, lm1)) %>% 
+women_later_scores <- women_later_scores %>% mutate(lm1 = if_else(is.na(lm1), 0, lm1)) %>%
   mutate(score = if_else(is.na(score), 0, score))
 sqrt(mean(women_later_scores$lm2 - women_later_scores$score)^2)
