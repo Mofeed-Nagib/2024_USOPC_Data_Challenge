@@ -202,10 +202,10 @@ for (team_combo in 1:n_team_combos) {
   bb_min <- sub_team_scores %>% filter(country == 'USA') %>% slice_min(order_by = bb_mean, n = 1) %>% pull(fullname)
   ub_min <- sub_team_scores %>% filter(country == 'USA') %>% slice_min(order_by = ub_mean, n = 1) %>% pull(fullname)
   
-  sub_team_scores[fullname == vt_min,startsWith(colnames(sub_team_scores),"vt")] <- NA
-  sub_team_scores[fullname == fx_min,startsWith(colnames(sub_team_scores),"fx")] <- NA
-  sub_team_scores[fullname == bb_min,startsWith(colnames(sub_team_scores),"bb")] <- NA
-  sub_team_scores[fullname == ub_min,startsWith(colnames(sub_team_scores),"ub")] <- NA
+  sub_team_scores[sub_team_scores$fullname == vt_min,startsWith(colnames(sub_team_scores),"vt")] <- NA
+  sub_team_scores[sub_team_scores$fullname == fx_min,startsWith(colnames(sub_team_scores),"fx")] <- NA
+  sub_team_scores[sub_team_scores$fullname == bb_min,startsWith(colnames(sub_team_scores),"bb")] <- NA
+  sub_team_scores[sub_team_scores$fullname == ub_min,startsWith(colnames(sub_team_scores),"ub")] <- NA
   
   # Now, for each trial 
   # test trial <- 1
@@ -266,7 +266,16 @@ for (team_combo in 1:n_team_combos) {
   }
   
   # Use the US outcomes to calculate 'weighted medal count' for each trial
-  lapply(ls_medal_winners, medal_count)
+  #lapply(ls_medal_winners, medal_count, in_team_combo = team_combo)
+  
+  for (trial in 1:trials) {
+    
+    medals <- ls_medal_winners[[paste0("trial_", trial)]]$medal
+    wt_count <- 3*sum(medals == 'gold') + 2*sum(medals == 'silver') + sum(medals == 'bronze')
+    # add weighted count to dataframe
+    df_female_us_teams[team_combo, paste0('wt_count_trial_', trial)] <- wt_count
+    
+  }
   
   # save medal winners to an object
   out_female_medal_winners[[paste0("team_combo_", team_combo)]] <- ls_medal_winners

@@ -92,10 +92,10 @@ event_final <- function(in_apparatus, in_trial_number, opt_gender) {
 }
 
 # create function to calculate weighted medal count
-medal_count <- function(in_list_item) {
+medal_count <- function(in_list_item, in_team_combo) {
   medals <- in_list_item$medal
   wt_count <- 3*sum(medals == 'gold') + 2*sum(medals == 'silver') + sum(medals == 'bronze')
   # add weighted count to dataframe
-  df_female_us_teams[team_combo, paste0('wt_count_trial_', trial)] <- wt_count
+  df_female_us_teams[in_team_combo, paste0('wt_count_trial_', trial)] <<- wt_count
 }
 
