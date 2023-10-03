@@ -65,7 +65,7 @@ best_women_dnq <- later_player_scores %>%
 #=======================#
 
 # start by getting names of usa male and female athletes
-us_males <- later_scores %>% 
+us_men <- later_scores %>% 
   filter(country == 'USA' & gender == 'm') %>% 
   distinct(fullname) %>% 
   pull(fullname)
@@ -88,7 +88,7 @@ expired_players <- later_scores %>%
                    pull(fullname)
 
 # remove them from our bank of us athletes
-sub_us_males <- us_males[!(us_males %in% expired_players)]
+sub_us_men <- us_men[!(us_men %in% expired_players)]
 
 sub_us_women <- us_women[!(us_women %in% expired_players)]
 
@@ -121,7 +121,7 @@ keep_scores_mapp <- later_scores %>%
                    slice_max(order_by = avg, n = 3) %>% pull(fullname)
               
 
-sub_us_males <- sub_us_males[sub_us_males %in% c(keep_scores_maa, keep_scores_mapp)]
+sub_us_men <- sub_us_men[sub_us_men %in% c(keep_scores_maa, keep_scores_mapp)]
 sub_us_women <- sub_us_women[sub_us_women %in% c(keep_scores_waa, keep_scores_wapp)]
 
 #====================================#
@@ -129,7 +129,7 @@ sub_us_women <- sub_us_women[sub_us_women %in% c(keep_scores_waa, keep_scores_wa
 #====================================#
 
 # find all possible 5 person teams for the usa 
-male_us_teams  <- combn(sub_us_males, 5, simplify = F)
+male_us_teams  <- combn(sub_us_men, 5, simplify = F)
 women_us_teams <- combn(sub_us_women, 5, simplify = F)
 
 # convert teams into dataframes 
