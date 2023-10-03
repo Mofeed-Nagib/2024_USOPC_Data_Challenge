@@ -16,25 +16,25 @@ for (in_athlete in unique(all_female_athletes$fullname)) {
   
   # get mean scores
   fx <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'FX', 'mean']
-  bb <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'BB', 'mean']
   vt <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'VT', 'mean']
+  bb <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'BB', 'mean']
   ub <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'UB', 'mean']    
   
   # get sd scores
   sd_fx <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'FX', 'sd']
-  sd_bb <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'BB', 'sd']
   sd_vt <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'VT', 'sd']
+  sd_bb <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'BB', 'sd']
   sd_ub <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'UB', 'sd']  
   
   current_row <- all_female_athletes %>% 
     filter(fullname == in_athlete) %>% 
     mutate(fx_mean = ifelse(length(fx) == 1, fx, NA),
-           bb_mean = ifelse(length(bb) == 1, bb, NA),
            vt_mean = ifelse(length(vt) == 1, vt, NA),
+           bb_mean = ifelse(length(bb) == 1, bb, NA),
            ub_mean = ifelse(length(ub) == 1, ub, NA),
            fx_sd = ifelse(length(sd_fx) == 1, sd_fx, NA),
-           bb_sd = ifelse(length(sd_bb) == 1, sd_bb, NA),
            vt_sd = ifelse(length(sd_vt) == 1, sd_vt, NA),
+           bb_sd = ifelse(length(sd_bb) == 1, sd_bb, NA),
            ub_sd = ifelse(length(sd_ub) == 1, sd_ub, NA))
   
   women_mean_scores <- rbind(women_mean_scores, current_row)
@@ -56,7 +56,7 @@ qual_competitors <- as.data.frame(data.table::rbindlist(ls_qual_competitors, fil
 # collapse rows and deduplicate
 qual_competitors <- qual_competitors %>% 
   group_by(fullname, country, flag_team) %>% 
-  fill(fx_mean, bb_mean, ub_mean, vt_mean, fx_sd, bb_sd, ub_sd, vt_sd, .direction = 'updown')
+  fill(fx_mean, vt_mean, bb_mean, ub_mean, fx_sd, vt_sd, bb_sd, ub_sd, .direction = 'updown')
 
 qual_competitors <- qual_competitors[!duplicated(qual_competitors),]
 
@@ -112,10 +112,10 @@ team_final_scores <- qual_competitors %>%
 # and calculate aa scores where necessary
 for (trial in 1:trials) {
   qual_scores <- qual_scores %>% 
-    mutate(!!as.name(paste0("aa_", trial)) := get(paste0("bb_", trial)) + get(paste0("ub_", trial)) + get(paste0("vt_", trial)) + get(paste0("fx_", trial)))
+    mutate(!!as.name(paste0("aa_", trial)) := get(paste0("fx_", trial)) + get(paste0("vt_", trial)) + get(paste0("bb_", trial)) + get(paste0("ub_", trial)))
   
   aa_final_scores <- aa_final_scores %>% 
-    mutate(!!as.name(paste0("aa_", trial)) := get(paste0("bb_", trial)) + get(paste0("ub_", trial)) + get(paste0("vt_", trial)) + get(paste0("fx_", trial))) 
+    mutate(!!as.name(paste0("aa_", trial)) := get(paste0("fx_", trial)) + get(paste0("vt_", trial)) + get(paste0("bb_", trial)) + get(paste0("ub_", trial))) 
 }
 
 #=======================#
@@ -147,20 +147,6 @@ for (team_combo in 1:n_team_combos) {
   for (trial in 1:trials) {
     
     # 4 up, 3 count rule: only the top 3 scores on each event count for each country
-    bb_scores <- simulated_scores %>% 
-                 filter(flag_team == 1) %>% 
-                 group_by(country) %>% 
-                 slice_max(bb_mean, n = 4) %>% 
-                 slice_max(get(paste0("bb_", trial)), n = 3) %>% 
-                 summarise(bb_score = sum(get(paste0("bb_", trial)), na.rm = T))
-    
-    ub_scores <- simulated_scores %>% 
-                 filter(flag_team == 1) %>% 
-                 group_by(country) %>% 
-                 slice_max(ub_mean, n = 4) %>%
-                 slice_max(get(paste0("ub_", trial)), n = 3) %>% 
-                 summarise(ub_score = sum(get(paste0("ub_", trial)), na.rm = T))
-    
     fx_scores <- simulated_scores %>% 
                  filter(flag_team == 1) %>% 
                  group_by(country) %>% 
@@ -174,16 +160,30 @@ for (team_combo in 1:n_team_combos) {
                  slice_max(vt_mean, n = 4) %>%
                  slice_max(get(paste0("vt_", trial)), n = 3) %>% 
                  summarise(vt_score = sum(get(paste0("vt_", trial)), na.rm = T))
+    
+    bb_scores <- simulated_scores %>% 
+                 filter(flag_team == 1) %>% 
+                 group_by(country) %>% 
+                 slice_max(bb_mean, n = 4) %>% 
+                 slice_max(get(paste0("bb_", trial)), n = 3) %>% 
+                 summarise(bb_score = sum(get(paste0("bb_", trial)), na.rm = T))
+    
+    ub_scores <- simulated_scores %>% 
+                 filter(flag_team == 1) %>% 
+                 group_by(country) %>% 
+                 slice_max(ub_mean, n = 4) %>%
+                 slice_max(get(paste0("ub_", trial)), n = 3) %>% 
+                 summarise(ub_score = sum(get(paste0("ub_", trial)), na.rm = T))
    
     # merge them together into one dataframe so we can sum
-    team_by_apparatus <- bb_scores %>% 
-                         left_join(ub_scores, by = 'country') %>% 
+    team_by_apparatus <- fx_scores %>% 
                          left_join(vt_scores, by = 'country') %>% 
-                         left_join(fx_scores, by = 'country')
+                         left_join(bb_scores, by = 'country') %>% 
+                         left_join(ub_scores, by = 'country')
     
     # sum across rows to get one final team score for the trial
     team_scores <- team_by_apparatus %>% 
-                   mutate(team_score = bb_score + ub_score + vt_score + fx_score)
+                   mutate(team_score = fx_score + vt_score + bb_score + ub_score)
     
     # select top 8 teams to move on
     teams_in_final[[paste0("trial_", trial)]] <- team_scores %>% 
@@ -197,13 +197,13 @@ for (team_combo in 1:n_team_combos) {
   ls_medal_winners <- list()
   
   # us team selection
-  vt_min <- sub_team_scores %>% filter(country == 'USA') %>% slice_min(order_by = vt_mean, n = 1) %>% pull(fullname)
   fx_min <- sub_team_scores %>% filter(country == 'USA') %>% slice_min(order_by = fx_mean, n = 1) %>% pull(fullname)
+  vt_min <- sub_team_scores %>% filter(country == 'USA') %>% slice_min(order_by = vt_mean, n = 1) %>% pull(fullname)
   bb_min <- sub_team_scores %>% filter(country == 'USA') %>% slice_min(order_by = bb_mean, n = 1) %>% pull(fullname)
   ub_min <- sub_team_scores %>% filter(country == 'USA') %>% slice_min(order_by = ub_mean, n = 1) %>% pull(fullname)
   
-  sub_team_scores[sub_team_scores$fullname == vt_min,startsWith(colnames(sub_team_scores),"vt")] <- NA
   sub_team_scores[sub_team_scores$fullname == fx_min,startsWith(colnames(sub_team_scores),"fx")] <- NA
+  sub_team_scores[sub_team_scores$fullname == vt_min,startsWith(colnames(sub_team_scores),"vt")] <- NA
   sub_team_scores[sub_team_scores$fullname == bb_min,startsWith(colnames(sub_team_scores),"bb")] <- NA
   sub_team_scores[sub_team_scores$fullname == ub_min,startsWith(colnames(sub_team_scores),"ub")] <- NA
   
@@ -216,10 +216,10 @@ for (team_combo in 1:n_team_combos) {
     #====================#
     
     # simulate event finals 
+    fx_final <- event_final('fx', trial, opt_gender = 'w')
     vt_final <- event_final('vt', trial, opt_gender = 'w')
     bb_final <- event_final('bb', trial, opt_gender = 'w')
     ub_final <- event_final('ub', trial, opt_gender = 'w')
-    fx_final <- event_final('fx', trial, opt_gender = 'w')
     
     #========================#
     #=== all around final ===#
@@ -238,8 +238,8 @@ for (team_combo in 1:n_team_combos) {
     # tally scores by country
     team_final <- team_competitors %>% 
                   group_by(country) %>% 
-                  summarise(final_score = sum(get(paste0('vt_', trial)), na.rm = T) +
-                                          sum(get(paste0('fx_', trial)), na.rm = T) +
+                  summarise(final_score = sum(get(paste0('fx_', trial)), na.rm = T) +
+                                          sum(get(paste0('vt_', trial)), na.rm = T) +
                                           sum(get(paste0('bb_', trial)), na.rm = T) +
                                           sum(get(paste0('ub_', trial)), na.rm = T)) 
     
@@ -259,7 +259,7 @@ for (team_combo in 1:n_team_combos) {
     #==============#
     
     # stack together the us medal results from all finals
-    out_us_results <- plyr::rbind.fill(vt_final, bb_final, ub_final, fx_final, aa_final, out_team_winners)
+    out_us_results <- plyr::rbind.fill(fx_final, vt_final, bb_final, ub_final, aa_final, out_team_winners)
 
     # save results to an object
     ls_medal_winners[[paste0("trial_", trial)]] <- out_us_results
