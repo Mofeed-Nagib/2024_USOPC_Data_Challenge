@@ -202,10 +202,10 @@ for (team_combo in 1:n_team_combos) {
   bb_min <- sub_team_scores %>% filter(country == 'USA') %>% slice_min(order_by = bb_mean, n = 1) %>% pull(fullname)
   ub_min <- sub_team_scores %>% filter(country == 'USA') %>% slice_min(order_by = ub_mean, n = 1) %>% pull(fullname)
   
-  sub_team_scores[sub_team_scores$fullname == fx_min,startsWith(colnames(sub_team_scores),"fx")] <- NA
-  sub_team_scores[sub_team_scores$fullname == vt_min,startsWith(colnames(sub_team_scores),"vt")] <- NA
-  sub_team_scores[sub_team_scores$fullname == bb_min,startsWith(colnames(sub_team_scores),"bb")] <- NA
-  sub_team_scores[sub_team_scores$fullname == ub_min,startsWith(colnames(sub_team_scores),"ub")] <- NA
+  sub_team_scores[sub_team_scores$fullname %in% fx_min,startsWith(colnames(sub_team_scores),"fx")] <- NA
+  sub_team_scores[sub_team_scores$fullname %in% vt_min,startsWith(colnames(sub_team_scores),"vt")] <- NA
+  sub_team_scores[sub_team_scores$fullname %in% bb_min,startsWith(colnames(sub_team_scores),"bb")] <- NA
+  sub_team_scores[sub_team_scores$fullname %in% ub_min,startsWith(colnames(sub_team_scores),"ub")] <- NA
   
   # Now, for each trial 
   # test trial <- 1

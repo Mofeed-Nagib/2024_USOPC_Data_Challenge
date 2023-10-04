@@ -245,12 +245,12 @@ for (team_combo in 1:n_team_combos) {
   sr_min <- sub_team_scores %>% filter(country == 'USA') %>% slice_min(order_by = sr_mean, n = 1) %>% pull(fullname)
   ph_min <- sub_team_scores %>% filter(country == 'USA') %>% slice_min(order_by = ph_mean, n = 1) %>% pull(fullname)
   
-  sub_team_scores[sub_team_scores$fullname == fx_min,startsWith(colnames(sub_team_scores),"fx")] <- NA
-  sub_team_scores[sub_team_scores$fullname == vt_min,startsWith(colnames(sub_team_scores),"vt")] <- NA
-  sub_team_scores[sub_team_scores$fullname == hb_min,startsWith(colnames(sub_team_scores),"hb")] <- NA
-  sub_team_scores[sub_team_scores$fullname == pb_min,startsWith(colnames(sub_team_scores),"pb")] <- NA
-  sub_team_scores[sub_team_scores$fullname == sr_min,startsWith(colnames(sub_team_scores),"sr")] <- NA
-  sub_team_scores[sub_team_scores$fullname == ph_min,startsWith(colnames(sub_team_scores),"ph")] <- NA
+  sub_team_scores[sub_team_scores$fullname %in% fx_min,startsWith(colnames(sub_team_scores),"fx")] <- NA
+  sub_team_scores[sub_team_scores$fullname %in% vt_min,startsWith(colnames(sub_team_scores),"vt")] <- NA
+  sub_team_scores[sub_team_scores$fullname %in% hb_min,startsWith(colnames(sub_team_scores),"hb")] <- NA
+  sub_team_scores[sub_team_scores$fullname %in% pb_min,startsWith(colnames(sub_team_scores),"pb")] <- NA
+  sub_team_scores[sub_team_scores$fullname %in% sr_min,startsWith(colnames(sub_team_scores),"sr")] <- NA
+  sub_team_scores[sub_team_scores$fullname %in% ph_min,startsWith(colnames(sub_team_scores),"ph")] <- NA
   
   # Now, for each trial 
   # test trial <- 1
