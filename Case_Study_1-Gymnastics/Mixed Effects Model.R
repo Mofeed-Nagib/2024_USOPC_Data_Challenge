@@ -1,3 +1,5 @@
+library(merTools)
+
 set.seed(12)
 
 d <- later_scores
@@ -12,6 +14,7 @@ m_HB$fold = sample(folds, nrow(m_HB), replace=F)
 
 
 m_HB$lmer1 <- NA
+m_HB$pred <- NA
 lmer1<- lmer(score ~ (1|fullname) + round, data = m_HB[train.rows,])
 for(j in 1:k){
   cat(j, "")
@@ -22,8 +25,10 @@ for(j in 1:k){
   
   m_HB[test.rows,]$lmer1 <- predict(lmer1, newdata = m_HB[test.rows,], type = 'response', allow.new.levels = T)
 
-
+  m_HB[test.rows,]$pred <- predict(lmer1, newdata = m_HB[test.rows,], type = 'response', allow.new.levels = TRUE)
+  
 }
+m_HB$pred <- predictInterval(lmer1, newdata = m_HB, level = 0.95)
 # error = 1.39
 sqrt(mean((m_HB$lmer1 - m_HB$score)^2))
 AIC_1 <- AIC(lmer1)
