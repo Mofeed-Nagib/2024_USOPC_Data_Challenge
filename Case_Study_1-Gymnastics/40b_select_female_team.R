@@ -1,5 +1,15 @@
 ## This script uses the distributions we created / scores we predicted in previous scripts
 ## to select the optimal female gymnastics team!
+library(doSNOW)
+library(foreach)
+library(parallel)
+
+## Setup
+n.cores = detectCores()-2 ## leave 2 cores unused so I can keep using computer
+
+print(Sys.time())
+cl = makeCluster(n.cores)
+registerDoSNOW(cl)
 
 # create list to hold output
 out_female_medal_winners <- list()
@@ -128,7 +138,8 @@ for (trial in 1:trials) {
 # only running simulation for two teams for now!!
 if (is.na(n_team_combos)) {n_team_combos <- nrow(df_female_us_teams)}
 
-foreach(team_combo = 1:n_team_combos) %do% {
+for (team_combo in 1:n_team_combos) {
+  
   # print statement
   print(paste0("Running simulation ", team_combo, " out of ", n_team_combos))
   
@@ -144,7 +155,9 @@ foreach(team_combo = 1:n_team_combos) %do% {
   teams_in_final <- list()
   
   # for each trial, calculate team scores and aa scores
-  for (trial in 1:trials) {
+  foreach(trial = 1:trials) %dopar% {
+    
+    library(dplyr)
     
     # 4 up, 3 count rule: only the top 3 scores on each event count for each country
     fx_scores <- simulated_scores %>% 
@@ -211,6 +224,8 @@ foreach(team_combo = 1:n_team_combos) %do% {
   # test trial <- 1
   for (trial in 1:trials) {
     
+    library(dplyr)
+    source("Case_Study_1-Gymnastics/35_define_team_selection_functions.R")
     #====================#
     #=== event finals ===#
     #====================#
@@ -250,6 +265,7 @@ foreach(team_combo = 1:n_team_combos) %do% {
                     select(country, final_score) %>% 
                     mutate(final_type = "team")
     
+    if (nrow(team_winners) == 3) {}
     # add on medal color as column and subset to us only 
     out_team_winners <- data.frame(team_winners, medal = c('gold', 'silver', 'bronze')) %>% 
                         filter(country == 'USA')
@@ -262,13 +278,13 @@ foreach(team_combo = 1:n_team_combos) %do% {
     out_us_results <- plyr::rbind.fill(fx_final, vt_final, bb_final, ub_final, aa_final, out_team_winners)
 
     # save results to an object
-    ls_medal_winners[[paste0("trial_", trial)]] <- out_us_results
+    ls_medal_winners[[paste0("trial_", trial)]] <- ifelse(nrow(out_us_results) == 0, NA, out_us_results)
   }
   
   # Use the US outcomes to calculate 'weighted medal count' for each trial
   #lapply(ls_medal_winners, medal_count, in_team_combo = team_combo)
   
-  for (trial in 1:trials) {
+  foreach(trial = 1:trials) %dopar% {
     
     medals <- ls_medal_winners[[paste0("trial_", trial)]]$medal
     wt_count <- 3*sum(medals == 'gold') + 2*sum(medals == 'silver') + sum(medals == 'bronze')
