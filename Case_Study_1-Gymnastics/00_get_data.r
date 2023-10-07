@@ -29,6 +29,7 @@ library(RecordLinkage)
 library(rsconnect)
 library(tidyverse)
 library(pubtheme)
+library(foreach)
 
 in_earlier_scores <- read.csv("Case_Study_1-Gymnastics/data/data_2017_2021.csv")
 in_later_scores   <- read.csv("Case_Study_1-Gymnastics/data/data_2022_2023.csv")
