@@ -90,6 +90,3 @@ event_final <- function(in_apparatus, in_trial_number, opt_gender) {
   
   return(out_winners)
 }
-
-
-
