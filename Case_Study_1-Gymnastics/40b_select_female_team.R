@@ -150,12 +150,9 @@ for (team_combo in 1:n_team_combos) {
   sub_aa_scores <- aa_final_scores %>% filter(country != 'USA' | fullname %in% as.character(df_female_us_teams[team_combo,1:5]))
   sub_team_scores <- team_final_scores %>% filter(country != 'USA' | fullname %in% as.character(df_female_us_teams[team_combo,1:5]))
   
-  # Create team scores 
-  # create list to hold the teams moving on to final
-  teams_in_final <- list()
-  
+  # Create team scores
   # for each trial, calculate team scores and aa scores
-  foreach(trial = 1:trials) %dopar% {
+  teams_in_final <- foreach(trial = 1:trials) %dopar% {
     
     library(dplyr)
     
@@ -206,8 +203,6 @@ for (team_combo in 1:n_team_combos) {
   }
   
   # Simulate the final rounds
-  # create list to hold medal winners
-  ls_medal_winners <- list()
   
   # us team selection
   fx_min <- sub_team_scores %>% filter(country == 'USA') %>% slice_min(order_by = fx_mean, n = 1) %>% pull(fullname)
@@ -222,7 +217,7 @@ for (team_combo in 1:n_team_combos) {
   
   # Now, for each trial 
   # test trial <- 1
-  for (trial in 1:trials) {
+  ls_medal_winners <- foreach(trial = 1:trials) %dopar% {
     
     library(dplyr)
     source("Case_Study_1-Gymnastics/35_define_team_selection_functions.R")
@@ -248,7 +243,7 @@ for (team_combo in 1:n_team_combos) {
     
     # subset team scores dataframe to countries that qualified for the team final
     team_competitors <- sub_team_scores %>%
-                       filter(country %in% teams_in_final[[paste0("trial_", trial)]])
+                       filter(country %in% teams_in_final[[trial]])
     
     # tally scores by country
     team_final <- team_competitors %>% 
@@ -265,7 +260,6 @@ for (team_combo in 1:n_team_combos) {
                     select(country, final_score) %>% 
                     mutate(final_type = "team")
     
-    if (nrow(team_winners) == 3) {}
     # add on medal color as column and subset to us only 
     out_team_winners <- data.frame(team_winners, medal = c('gold', 'silver', 'bronze')) %>% 
                         filter(country == 'USA')
@@ -278,13 +272,13 @@ for (team_combo in 1:n_team_combos) {
     out_us_results <- plyr::rbind.fill(fx_final, vt_final, bb_final, ub_final, aa_final, out_team_winners)
 
     # save results to an object
-    ls_medal_winners[[paste0("trial_", trial)]] <- ifelse(nrow(out_us_results) == 0, NA, out_us_results)
+    ls_medal_winners[[trial]] <- out_us_results
   }
   
   # Use the US outcomes to calculate 'weighted medal count' for each trial
   #lapply(ls_medal_winners, medal_count, in_team_combo = team_combo)
   
-  foreach(trial = 1:trials) %dopar% {
+  for (trial in 1:trials) {
     
     medals <- ls_medal_winners[[paste0("trial_", trial)]]$medal
     wt_count <- 3*sum(medals == 'gold') + 2*sum(medals == 'silver') + sum(medals == 'bronze')
