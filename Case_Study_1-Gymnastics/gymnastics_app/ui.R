@@ -29,11 +29,15 @@ fluidPage(
       # women's tab
       tabPanel("Women's Team",
                
+               # select team
                selectizeInput("select_females",
                               "Select up to 5 female athletes for your team:",
                               choices = all_female_athletes,
                               multiple = T,
-                              options = list(maxItems = 5))) # end women's tab
+                              options = list(maxItems = 5)),
+               
+               # display results
+               DTOutput("female_teams")) # end women's tab
       
     ) # end tabset
 ) # close page
