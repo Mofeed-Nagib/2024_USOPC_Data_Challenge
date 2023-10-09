@@ -248,7 +248,7 @@ for(j in 1:k){
 # sqrt(mean(d$lm1 - d$score)^2)
 # error = 1.17
 sqrt(mean((w_UB$lmer1 - w_UB$score)^2))
-w_UB_mean <- m_HB %>% group_by(fullname) %>% summarise(mean_lmer1 = mean(lmer1))
+w_UB_mean <- w_UB %>% group_by(fullname) %>% summarise(mean_lmer1 = mean(lmer1))
 # Women Vault
 
 w_VT <- filter(d, gender=='w' & apparatus=='VT')
@@ -274,4 +274,4 @@ for(j in 1:k){
 # sqrt(mean(d$lm1 - d$score)^2)
 # error = 1.88
 sqrt(mean((w_VT$lmer1 - w_VT$score)^2))
-w_VT_mean <- m_HB %>% group_by(fullname) %>% summarise(mean_lmer1 = mean(lmer1))
+w_VT_mean <- w_VT %>% group_by(fullname) %>% summarise(mean_lmer1 = mean(lmer1))
