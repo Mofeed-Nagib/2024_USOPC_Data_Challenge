@@ -1,5 +1,10 @@
 library(shiny)
 library(bslib)
+library(DT)
+library(dplyr)
+
+# source global
+source("global.R")
 
 # Define UI for application that draws a histogram
 fluidPage(
@@ -11,10 +16,24 @@ fluidPage(
     navbarPage(title = 'UCSAS 2024 USPOC Data Challenge: US Olympic Gymnastics',
                 
       # male tab
-      tabPanel("Men's Team"), # end men's tab
+      tabPanel("Men's Team",
+               
+               selectizeInput("select_males",
+                           "Select up to 5 male athletes for your team:",
+                           choices = all_male_athletes,
+                           multiple = T,
+                           options = list(maxItems = 5))
+               
+               ), # end men's tab
       
       # women's tab
-      tabPanel("Women's Team") # end women's tab
+      tabPanel("Women's Team",
+               
+               selectizeInput("select_females",
+                              "Select up to 5 female athletes for your team:",
+                              choices = all_female_athletes,
+                              multiple = T,
+                              options = list(maxItems = 5))) # end women's tab
       
     ) # end tabset
 ) # close page
