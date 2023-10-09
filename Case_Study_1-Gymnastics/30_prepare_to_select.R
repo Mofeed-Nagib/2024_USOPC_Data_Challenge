@@ -12,25 +12,25 @@ later_player_scores <- later_scores %>%
   group_by(fullname, country, gender) %>% 
   summarise(avg_score = mean(score))
 
-# for teams, select top 5 avg scores for each country and sum together to get a team score
-country_sums <- later_player_scores %>% 
-  group_by(country, gender) %>% 
-  filter(length(unique(fullname)) >= 5 & !is.na(country)) %>% 
-  slice_max(avg_score, n = 5) %>% 
-  summarise(sum_score = sum(avg_score))
-
-# pick top 9 teams (that haven't already qualified) based on estimated team score
-top_men   <- country_sums %>% 
-  filter(gender == 'm' & !(country %in% mens_known_qualifiers)) %>% 
-  arrange(-sum_score) %>% head(9)
-
-top_women <- country_sums %>% 
-  filter(gender == 'w' & !(country %in% womens_known_qualifiers)) %>% 
-  arrange(-sum_score) %>% head(9)
+# # for teams, select top 5 avg scores for each country and sum together to get a team score
+# country_sums <- later_player_scores %>% 
+#   group_by(country, gender) %>% 
+#   filter(length(unique(fullname)) >= 5 & !is.na(country)) %>% 
+#   slice_max(avg_score, n = 5) %>% 
+#   summarise(sum_score = sum(avg_score))
+# 
+# # pick top 9 teams (that haven't already qualified) based on estimated team score
+# top_men   <- country_sums %>% 
+#   filter(gender == 'm' & !(country %in% mens_known_qualifiers)) %>% 
+#   arrange(-sum_score) %>% head(9)
+# 
+# top_women <- country_sums %>% 
+#   filter(gender == 'w' & !(country %in% womens_known_qualifiers)) %>% 
+#   arrange(-sum_score) %>% head(9)
 
 # concatenate countries that have already qualified and our estimated qualifiers
-men_countries   <- c(mens_known_qualifiers, top_men$country)
-women_countries <- c(womens_known_qualifiers, top_women$country)
+men_countries   <- c(mens_known_qualifiers) #, top_men$country)
+women_countries <- c(womens_known_qualifiers) #, top_women$country)
 
 # determine 5 person teams by taking 5 athletes with highest scores from each country
 men_athletes   <- later_player_scores %>% 
@@ -44,6 +44,13 @@ women_athletes <- later_player_scores %>%
   group_by(country) %>% 
   slice_max(avg_score, n = 5) %>% 
   mutate(flag_team = 1)
+
+
+# known qualifiers of the best 36 gymnasts whose teams did not qualify
+know_men_dnq <- c("Milad Karimi", "Artem Dolgopyat", "Artur Davtyan", "Krisztofer Mészáros",
+                  "Lee Jun-ho", "Diogo Soares", "Luka Van den Keybus", "Andrei Muntean",
+                  "Rhys McClenaghan", "Eleftherios Petrounias", "Kevin Penev",
+                  "Noah Kuavita", "Tin Srbić")
 
 # determine the best 36 gymnasts whose teams did not qualify (maximum of 3 individuals per country)
 best_men_dnq   <- later_player_scores %>% 
