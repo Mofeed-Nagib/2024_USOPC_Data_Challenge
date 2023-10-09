@@ -28,10 +28,9 @@ for(j in 1:k){
  
 }
 
- m_HB %>% group_by(fullname) %>% summarise(mean_lmer1 = mean(lmer1))
+m_HB_mean <- m_HB %>% group_by(fullname) %>% summarise(mean_lmer1 = mean(lmer1))
 
-#pred_m_HB <- predictInterval(lmer1, newdata = m_HB, returnSims = TRUE, seed = 100, n.sims = 10, level = .95)
-# error = 1.39
+
 sqrt(mean((m_HB$lmer1 - m_HB$score)^2))
 AIC_1 <- AIC(lmer1)
 print(AIC_1)
@@ -58,6 +57,7 @@ for(j in 1:k){
 
 }
 
+m_PH_mean <- m_PH %>% group_by(fullname) %>% summarise(mean_lmer1 = mean(lmer1))
 # error = 1.53
 sqrt(mean((m_PH$lmer1 - m_PH$score)^2))
 
@@ -90,7 +90,7 @@ for(j in 1:k){
 # error = 1.43
 sqrt(mean((m_FX$lmer1 - m_FX$score)^2))
 
-
+m_FX_mean <- m_FX %>% group_by(fullname) %>% summarise(mean_lmer1 = mean(lmer1))
 # Men Parallel Bars
 
 m_PB <- filter(d, gender=='m' & apparatus=='PB')
@@ -116,7 +116,7 @@ for(j in 1:k){
 # sqrt(mean(d$lm1 - d$score)^2)
 # error = 1.27
 sqrt(mean((m_PB$lmer1 - m_PB$score)^2))
-
+m_PB_mean <- m_PB %>% group_by(fullname) %>% summarise(mean_lmer1 = mean(lmer1))
 # Men Rings
 
 m_SR <- filter(d, gender=='m' & apparatus=='SR')
@@ -142,7 +142,7 @@ for(j in 1:k){
 # sqrt(mean(d$lm1 - d$score)^2)
 # error = 1.28
 sqrt(mean((m_SR$lmer1 - m_SR$score)^2))
-
+m_SR_mean <- m_SR %>% group_by(fullname) %>% summarise(mean_lmer1 = mean(lmer1))
 # Men Vault
 
 m_VT <- filter(d, gender=='m' & apparatus=='VT')
@@ -168,7 +168,7 @@ for(j in 1:k){
 # sqrt(mean(d$lm1 - d$score)^2)
 # error = 2.26
 sqrt(mean((m_VT$lmer1 - m_VT$score)^2))
-
+m_VT_mean <- m_VT %>% group_by(fullname) %>% summarise(mean_lmer1 = mean(lmer1))
 
 # Women Balance Beam
 
@@ -195,7 +195,7 @@ for(j in 1:k){
 # sqrt(mean(d$lm1 - d$score)^2)
 # error = .99
 sqrt(mean((w_BB$lmer1 - w_BB$score)^2))
-
+w_BB_mean <- w_BB %>% group_by(fullname) %>% summarise(mean_lmer1 = mean(lmer1))
 
 # Women Floor
 
@@ -222,7 +222,7 @@ for(j in 1:k){
 # sqrt(mean(d$lm1 - d$score)^2)
 # error = .94
 sqrt(mean((w_FX$lmer1 - w_FX$score)^2))
-
+w_FX_mean <- w_FX %>% group_by(fullname) %>% summarise(mean_lmer1 = mean(lmer1))
 # Women Unbalanced Beam
 
 w_UB <- filter(d, gender=='w' & apparatus=='UB')
@@ -248,7 +248,7 @@ for(j in 1:k){
 # sqrt(mean(d$lm1 - d$score)^2)
 # error = 1.17
 sqrt(mean((w_UB$lmer1 - w_UB$score)^2))
-
+w_UB_mean <- m_HB %>% group_by(fullname) %>% summarise(mean_lmer1 = mean(lmer1))
 # Women Vault
 
 w_VT <- filter(d, gender=='w' & apparatus=='VT')
@@ -274,3 +274,4 @@ for(j in 1:k){
 # sqrt(mean(d$lm1 - d$score)^2)
 # error = 1.88
 sqrt(mean((w_VT$lmer1 - w_VT$score)^2))
+w_VT_mean <- m_HB %>% group_by(fullname) %>% summarise(mean_lmer1 = mean(lmer1))
