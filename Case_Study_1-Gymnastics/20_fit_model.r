@@ -37,6 +37,22 @@ for (x in unique(later_scores$fullname)) {
     }
   }
 }
+
+
+gymnast_dist$lmer_mean <- NA
+
+for(i in 1:nrow(gymnast_dist)) {
+  if (gymnast_dist[i,]$apparatus == "HB") {
+    m_HB_mean_row <- m_HB_mean %>% filter(fullname == gymnast_dist[i,]$fullname)
+    gymnast_dist[i,]$lmer_mean <- m_HB_mean_row$mean_lmer1
+  }
+  
+}
+
+
+
+
+
 # Check mean squared error
 
 later_scores$distscore <- NA

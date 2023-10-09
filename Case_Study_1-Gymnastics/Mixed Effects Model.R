@@ -15,7 +15,7 @@ m_HB$fold = sample(folds, nrow(m_HB), replace=F)
 
 m_HB$lmer1 <- NA
 m_HB$pred <- NA
-lmer1<- lmer(score ~ (1|fullname) + round, data = m_HB[train.rows,])
+lmer1<- lmer(score ~ (1|fullname) + round, data = m_HB)
 for(j in 1:k){
   cat(j, "")
   train.rows <- m_HB$fold!=j
@@ -25,10 +25,12 @@ for(j in 1:k){
   
   m_HB[test.rows,]$lmer1 <- predict(lmer1, newdata = m_HB[test.rows,], type = 'response', allow.new.levels = T)
 
-  m_HB[test.rows,]$pred <- predict(lmer1, newdata = m_HB[test.rows,], type = 'response', allow.new.levels = TRUE)
-  
+ 
 }
-m_HB$pred <- predictInterval(lmer1, newdata = m_HB, level = 0.95)
+
+ m_HB %>% group_by(fullname) %>% summarise(mean_lmer1 = mean(lmer1))
+
+#pred_m_HB <- predictInterval(lmer1, newdata = m_HB, returnSims = TRUE, seed = 100, n.sims = 10, level = .95)
 # error = 1.39
 sqrt(mean((m_HB$lmer1 - m_HB$score)^2))
 AIC_1 <- AIC(lmer1)
