@@ -22,7 +22,10 @@ fluidPage(
                            "Select up to 5 male athletes for your team:",
                            choices = all_male_athletes,
                            multiple = T,
-                           options = list(maxItems = 5))
+                           options = list(maxItems = 5)),
+               
+               # display results
+               DTOutput("male_teams")
                
                ), # end men's tab
       
@@ -36,8 +39,12 @@ fluidPage(
                               multiple = T,
                               options = list(maxItems = 5)),
                
+               
                # display results
-               DTOutput("female_teams")) # end women's tab
+               DTOutput("female_teams"),
+               
+               DTOutput("female_medals_detailed")
+               ) # end women's tab
       
     ) # end tabset
 ) # close page
