@@ -15,12 +15,12 @@ men_mean_scores <- data.frame()
 for (in_athlete in unique(all_male_athletes$fullname)) {
   
   # get mean scores
-  fx <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'FX', 'mean']
-  vt <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'VT', 'mean']
-  hb <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'HB', 'mean']
-  pb <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'PB', 'mean']
-  sr <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'SR', 'mean']
-  ph <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'PH', 'mean']
+  fx <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'FX', 'lmer_mean']
+  vt <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'VT', 'lmer_mean']
+  hb <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'HB', 'lmer_mean']
+  pb <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'PB', 'lmer_mean']
+  sr <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'SR', 'lmer_mean']
+  ph <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'PH', 'lmer_mean']
   
   # get sd scores
   sd_fx <- gymnast_dist[gymnast_dist$fullname == in_athlete & gymnast_dist$apparatus == 'FX', 'sd']
