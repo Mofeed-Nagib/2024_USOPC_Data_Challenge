@@ -13,46 +13,116 @@ for (x in unique(later_scores$fullname)) {
   # grab that gymnast's events
   apparatus = unique(later_scores[later_scores$fullname == x, ]$apparatus)
   
+  gender = unique(later_scores[later_scores$fullname == x, ]$gender) 
   # for each apparatus
   for (y in apparatus) {
-    
-    # get scores for current gymnast and apparatus
-    gymnast_apparatus_scores <- later_scores %>% filter(fullname == x & apparatus == y)
-    
-    # get sample size of each gymnast + apparatus combo
-    sample_size <- as.numeric(length(gymnast_apparatus_scores$score))
-    
-    if (sample_size > 1 & sd(gymnast_apparatus_scores$score, na.rm=TRUE) != 0) {
-      # take mean of scores
-      dist_mean <- mean(gymnast_apparatus_scores$score)
-    
-      # calculate sd under CLT
-      dist_sd <- sd(gymnast_apparatus_scores$score) / sqrt(sample_size)
+    for ( z in gender)
+      # get scores for current gymnast and apparatus
+      gymnast_apparatus_scores <- later_scores %>% filter(fullname == x & apparatus == y & gender == z)
       
-      # create row of dataframe
-      current_row <- data.frame("fullname" = x, "apparatus" = y, "mean" = dist_mean, "sd" = dist_sd, "sample_size" = sample_size)
+      # get sample size of each gymnast + apparatus combo
+      sample_size <- as.numeric(length(gymnast_apparatus_scores$score))
       
-      # stack onto df
-      gymnast_dist <- rbind(gymnast_dist, current_row)
+      if (sample_size > 1 & sd(gymnast_apparatus_scores$score, na.rm=TRUE) != 0) {
+        # take mean of scores
+        dist_mean <- mean(gymnast_apparatus_scores$score)
+      
+        # calculate sd under CLT
+        dist_sd <- sd(gymnast_apparatus_scores$score) / sqrt(sample_size)
+        
+        # create row of dataframe
+        current_row <- data.frame("fullname" = x, "apparatus" = y, "gender" = z, "mean" = dist_mean, "sd" = dist_sd, "sample_size" = sample_size)
+        
+        # stack onto df
+        gymnast_dist <- rbind(gymnast_dist, current_row)
+        
     }
   }
 }
 
 
-gymnast_dist$lmer_mean <- NA
 
+gymnast_dist$lmer_mean <- NA
+  
 for(i in 1:nrow(gymnast_dist)) {
-  if (gymnast_dist[i,]$apparatus == "HB") {
+  if (gymnast_dist[i,]$apparatus == "HB" & gymnast_dist[i,]$gender == "m") {
     m_HB_mean_row <- m_HB_mean %>% filter(fullname == gymnast_dist[i,]$fullname)
     gymnast_dist[i,]$lmer_mean <- m_HB_mean_row$mean_lmer1
   }
   
 }
 
+for(i in 1:nrow(gymnast_dist)) {
+  if (gymnast_dist[i,]$apparatus == "PH" & gymnast_dist[i,]$gender == "m") {
+    m_PH_mean_row <- m_PH_mean %>% filter(fullname == gymnast_dist[i,]$fullname)
+    gymnast_dist[i,]$lmer_mean <- m_PH_mean_row$mean_lmer1
+  }
+  
+}
 
+for(i in 1:nrow(gymnast_dist)) {
+  if (gymnast_dist[i,]$apparatus == "FX" & gymnast_dist[i,]$gender == "m") {
+    m_FX_mean_row <- m_FX_mean %>% filter(fullname == gymnast_dist[i,]$fullname)
+    gymnast_dist[i,]$lmer_mean <- m_FX_mean_row$mean_lmer1
+  }
+  
+}
 
+for(i in 1:nrow(gymnast_dist)) {
+  if (gymnast_dist[i,]$apparatus == "PB" & gymnast_dist[i,]$gender == "m") {
+    m_PB_mean_row <- m_PB_mean %>% filter(fullname == gymnast_dist[i,]$fullname)
+    gymnast_dist[i,]$lmer_mean <- m_PB_mean_row$mean_lmer1
+  }
+  
+}
 
+for(i in 1:nrow(gymnast_dist)) {
+  if (gymnast_dist[i,]$apparatus == "SR" & gymnast_dist[i,]$gender == "m") {
+    m_SR_mean_row <- m_SR_mean %>% filter(fullname == gymnast_dist[i,]$fullname)
+    gymnast_dist[i,]$lmer_mean <- m_SR_mean_row$mean_lmer1
+  }
+  
+}
 
+for(i in 1:nrow(gymnast_dist)) {
+  if (gymnast_dist[i,]$apparatus == "VT" & gymnast_dist[i,]$gender == "m") {
+    m_VT_mean_row <- m_VT_mean %>% filter(fullname == gymnast_dist[i,]$fullname)
+    gymnast_dist[i,]$lmer_mean <- m_VT_mean_row$mean_lmer1
+  }
+  
+}
+
+for(i in 1:nrow(gymnast_dist)) {
+  if (gymnast_dist[i,]$apparatus == "BB" & gymnast_dist[i,]$gender == "w") {
+    w_BB_mean_row <- w_BB_mean %>% filter(fullname == gymnast_dist[i,]$fullname)
+    gymnast_dist[i,]$lmer_mean <- w_BB_mean_row$mean_lmer1
+  }
+  
+}
+
+for(i in 1:nrow(gymnast_dist)) {
+  if (gymnast_dist[i,]$apparatus == "FX" & gymnast_dist[i,]$gender == "w") {
+    w_FX_mean_row <- w_FX_mean %>% filter(fullname == gymnast_dist[i,]$fullname)
+    gymnast_dist[i,]$lmer_mean <- w_FX_mean_row$mean_lmer1
+  }
+  
+}
+
+for(i in 1:nrow(gymnast_dist)) {
+  if (gymnast_dist[i,]$apparatus == "UB" & gymnast_dist[i,]$gender == "w") {
+    w_UB_mean_row <- w_UB_mean %>% filter(fullname == gymnast_dist[i,]$fullname)
+    gymnast_dist[i,]$lmer_mean <- w_UB_mean_row$mean_lmer1
+  }
+  
+}
+
+for(i in 1:nrow(gymnast_dist)) {
+  if (gymnast_dist[i,]$apparatus == "VT" & gymnast_dist[i,]$gender == "w") {
+    w_VT_mean_row <- w_VT_mean %>% filter(fullname == gymnast_dist[i,]$fullname)
+    gymnast_dist[i,]$lmer_mean <- w_VT_mean_row$mean_lmer1
+  }
+  
+}
 # Check mean squared error
 
 later_scores$distscore <- NA
