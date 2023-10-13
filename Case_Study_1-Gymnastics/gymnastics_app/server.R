@@ -1,4 +1,7 @@
 library(shiny)
+library(bslib)
+library(DT)
+library(dplyr)
 
 # Define server logic required to draw a histogram
 function(input, output, session) {
@@ -42,16 +45,24 @@ function(input, output, session) {
     # get current medal winners
     selected_medal_winners <- data.table::rbindlist(female_detailed[[paste0("team_combo_", selected_combo)]])
     
-    selected_medal_winners
+    # let's aggregte them
+    agg_medal_winners <- selected_medal_winners %>% 
+                         mutate(final_type = as.factor(toupper(final_type)),
+                                medal = as.factor(stringr::str_to_title(medal))) %>% 
+                         group_by(fullname, final_type, medal) %>% 
+                         summarise(proportion = 100 * n()/n_trials)
+    
+    agg_medal_winners
   })
   
   # create data tables
   output$female_teams <- renderDT(datatable(display_female_teams(), 
                                             colnames = c("Team", "Average Weighted Medal Count"),
-                                            caption = "Select a row to see more information about that team!",
                                             selection = list(mode = 'single')))
   output$male_teams   <- renderDT(display_male_teams())
   
-  output$female_medals_detailed <- renderDT(selected_women())
+  output$female_medals_detailed <- renderDT(datatable(selected_women(),
+                                                      colnames = c('Athlete', 'Event', 'Medal Outcome', "Percent of Trials with Outcome"),
+                                                      filter = 'top'))
   
 }

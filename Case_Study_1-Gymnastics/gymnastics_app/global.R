@@ -1,9 +1,16 @@
+library(shiny)
+library(bslib)
+library(DT)
+library(dplyr)
 
 # load in data
 female_data <- readRDS("data/female_results.RDS")
 male_data <- readRDS("data/male_results.RDS")
 
 female_detailed <- readRDS("data/female_medals.RDS")
+
+# define number of trials as a parameter
+n_trials <- length(female_detailed[['team_combo_1']])
 
 # get unique competitors
 all_female_athletes <- unique(c(female_data$athlete_1, female_data$athlete_2, female_data$athlete_3, female_data$athlete_4, female_data$athlete_5))

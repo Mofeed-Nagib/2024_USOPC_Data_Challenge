@@ -32,19 +32,44 @@ fluidPage(
       # women's tab
       tabPanel("Women's Team",
                
-               # select team
-               selectizeInput("select_females",
-                              "Select up to 5 female athletes for your team:",
-                              choices = all_female_athletes,
-                              multiple = T,
-                              options = list(maxItems = 5)),
-               
-               
-               # display results
-               DTOutput("female_teams"),
-               
-               DTOutput("female_medals_detailed")
-               ) # end women's tab
+               # open siderbar layour
+               sidebarLayout(
+                 
+                 # open sidebar panel
+                 sidebarPanel(
+                   
+                   # select team
+                   selectizeInput("select_females",
+                                  "Select up to 5 female athletes for your team:",
+                                  choices = all_female_athletes,
+                                  multiple = T,
+                                  options = list(maxItems = 5)) # close select input
+                   ), # close sidebar panel
+                 
+                # open main panel
+                mainPanel(
+                  
+                  # open well panel 
+                  wellPanel(
+                    
+                    # explanatory text
+                    h3("Team Results"),
+                    p("The table below shows the average weighted medal count across our simulations. Weighted medal count is calculated as 3 * (# of gold medals) + 2 * (# of silver medals) + 1 * (# of bronze medals). Click on a team to see more detailed results below."),
+                    
+                    # display results
+                    DTOutput("female_teams")
+                  ), # close well panel
+                  
+                  hr(), 
+                  # open well panel to display detailed results
+                  wellPanel(
+                    h3("Detailed View"),
+                    DTOutput("female_medals_detailed")
+                  )
+                  
+                ) # close main panewl
+               ) # close sidebar layout
+              ) # end women's tab
       
     ) # end tabset
 ) # close page
