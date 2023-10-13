@@ -253,6 +253,7 @@ w_UB_mean <- w_UB %>% group_by(fullname) %>% summarise(mean_lmer1 = mean(lmer1))
 
 w_VT <- filter(d, gender=='w' & apparatus=='VT')
 
+w_VT <- w_VT %>% mutate(round = if_else(round == "AAqual", "qual", round))
 
 k=5
 folds=rep(1:k, length.out=nrow(w_VT))
