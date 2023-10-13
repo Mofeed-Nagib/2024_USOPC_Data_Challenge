@@ -37,13 +37,38 @@ fluidPage(
                  
                  # open sidebar panel
                  sidebarPanel(
+                    
+                   h4("Custom Athlete Selection"),
                    
                    # select team
                    selectizeInput("select_females",
                                   "Select up to 5 female athletes for your team:",
                                   choices = all_female_athletes,
                                   multiple = T,
-                                  options = list(maxItems = 5)) # close select input
+                                  options = list(maxItems = 5)), # close select input
+                   
+                   hr(), 
+                   
+                   # header 
+                   h4("Medal Weights"),
+                   
+                   # gold weight input
+                   numericInput("gold_weight",
+                                "Select a weight for gold medals:",
+                                value = 3,
+                                min = 0), # close gold input
+                   
+                   # silver weight input
+                   numericInput("silver_weight",
+                                "Select a weight for silver medals:",
+                                value = 2,
+                                min = 0), # close silver input
+                   
+                   # bronze weight input
+                   numericInput("bronze_weight",
+                                "Select a weight for bronze medals:",
+                                value = 1,
+                                min = 0) # close bronze input
                    ), # close sidebar panel
                  
                 # open main panel
@@ -64,7 +89,7 @@ fluidPage(
                   # open well panel to display detailed results
                   wellPanel(
                     h3("Detailed View"),
-                    DTOutput("female_medals_detailed")
+                    uiOutput("female_medals_detailed")
                   )
                   
                 ) # close main panewl
