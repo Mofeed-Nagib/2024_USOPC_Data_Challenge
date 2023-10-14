@@ -16,6 +16,7 @@ for (x in unique(later_scores$fullname)) {
   gender = unique(later_scores[later_scores$fullname == x, ]$gender) 
   # for each apparatus
   for (y in apparatus) {
+    #for each gender
     for ( z in gender)
       # get scores for current gymnast and apparatus
       gymnast_apparatus_scores <- later_scores %>% filter(fullname == x & apparatus == y & gender == z)
@@ -43,7 +44,8 @@ for (x in unique(later_scores$fullname)) {
 
 
 gymnast_dist$lmer_mean <- NA
-  
+
+# for each gender and apparatus, we added the lmer mean score to gymnast_dist 
 for(i in 1:nrow(gymnast_dist)) {
   if (gymnast_dist[i,]$apparatus == "HB" & gymnast_dist[i,]$gender == "m") {
     m_HB_mean_row <- m_HB_mean %>% filter(fullname == gymnast_dist[i,]$fullname)
@@ -52,6 +54,7 @@ for(i in 1:nrow(gymnast_dist)) {
   
 }
 
+#the code is the same for different gender and apparatus as above
 for(i in 1:nrow(gymnast_dist)) {
   if (gymnast_dist[i,]$apparatus == "PH" & gymnast_dist[i,]$gender == "m") {
     m_PH_mean_row <- m_PH_mean %>% filter(fullname == gymnast_dist[i,]$fullname)
@@ -152,6 +155,7 @@ for (i in seq(1, nrow(gymnast_dist))) {
 #============================#
 #=== score prediction lms ===#
 #============================#
+#code to see MSE and AIC for lms
 
 # # separate scores by gender and remove direct predictors of score
 # men_later_scores <- later_scores[later_scores$gender == "m", c(-1, -2, -3, -11, -12, -13)] # removing lastname, firstname, gender, e_score, d_score, penalty
