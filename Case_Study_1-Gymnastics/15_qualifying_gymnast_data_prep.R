@@ -1,5 +1,5 @@
 ## This file includes the data cleaning for each qualifying individual gymnast
-## whose country team did not qualify
+## whose country did not qualify
 
 # Clean up qualifying men's data
   # Milad Karimi
