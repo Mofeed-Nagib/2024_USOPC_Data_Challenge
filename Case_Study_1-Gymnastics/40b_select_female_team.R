@@ -138,10 +138,10 @@ for (trial in 1:trials) {
 # only running simulation for two teams for now!!
 if (is.na(women_team_combos)) {women_team_combos <- nrow(df_female_us_teams)}
 
-for (team_combo in 1:n_team_combos) {
+for (team_combo in 1:women_team_combos) {
   
   # print statement
-  print(paste0("Running simulation ", team_combo, " out of ", n_team_combos))
+  print(paste0("Running simulation ", team_combo, " out of ", women_team_combos))
   
   ## QUALIFYING ROUND
   # start by subsetting down our simulated scores to only the athletes we want
