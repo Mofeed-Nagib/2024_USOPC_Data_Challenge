@@ -49,7 +49,9 @@ clean_data <- function(in_data) {
     mutate(date = str_trim(str_to_title(date))) %>% 
     
     # a few other adhoc fixes
-    mutate(date = gsub("July", "Jul", date)) %>% 
+    mutate(date = gsub("June", "Jun", date)) %>%
+    mutate(date = gsub("July", "Jul", date)) %>%
+    mutate(date = gsub("Sept", "Sep", date)) %>%
     mutate(date = gsub(",", "", date)) %>% 
     
     # convert the month name into month number
