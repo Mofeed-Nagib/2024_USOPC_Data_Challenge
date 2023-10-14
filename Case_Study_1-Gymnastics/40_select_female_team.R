@@ -63,6 +63,7 @@ qual_competitors <- qual_competitors[!duplicated(qual_competitors),]
 # stack on us competitors
 qual_competitors <- rbind(qual_competitors, us_mean_scores)
 
+
 # now actually simulate qual scores
 qual_scores <- qual_competitors %>%
   rowwise() %>%
@@ -280,3 +281,4 @@ for (team_combo in 1:n_team_combos) {
   # save medal winners to an object
   out_female_medal_winners[[paste0("team_combo_", team_combo)]] <- ls_medal_winners
 }
+
