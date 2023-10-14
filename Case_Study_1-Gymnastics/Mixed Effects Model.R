@@ -19,7 +19,7 @@ m_HB$fold = sample(folds, nrow(m_HB), replace=F)
 m_HB$lmer1 <- NA
 m_HB$pred <- NA
 
-#Chose model as it had best AIC. Also chose lmer as we found that it had by far the lowest standard error compared to lm and using mean data for each player
+#Chose model as it had best AIC and SE amongst lmer models. Also, we chose lmer as we found that it had by far the lowest standard error compared to lm and using the mean data for each player
 lmer1<- lmer(score ~ (1|fullname) + round, data = m_HB)
 for(j in 1:k){
   cat(j, "")
@@ -38,6 +38,8 @@ m_HB_mean <- m_HB %>% group_by(fullname) %>% summarise(mean_lmer1 = mean(lmer1))
 # error = 1.36
 # This is MSE
 sqrt(mean((m_HB$lmer1 - m_HB$score)^2))
+
+# the code below is the same but for different apparatuses and gender
 
 # Men Pommel Horse
 
