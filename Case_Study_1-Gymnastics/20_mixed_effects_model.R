@@ -367,8 +367,10 @@ w_VT_mean <- w_VT %>% group_by(fullname) %>% summarise(mean_lmer1 = mean(lmer1))
 #=====================================#
 
 # # separate scores by gender and remove direct predictors of score or irrelevant columns
-# men_later_scores <- later_scores[later_scores$gender == "m", c(-1, -2, -3, -11, -12, -13)] # removing lastname, firstname, gender, e_score, d_score, penalty
-# women_later_scores <- later_scores[later_scores$gender == "w", c(-1, -2, -3, -11, -12, -13)] # removing lastname, firstname, gender, e_score, d_score, penalty
+# # removing lastname, firstname, gender, e_score, d_score, penalty
+# men_later_scores <- later_scores[later_scores$gender == "m", c(-1, -2, -3, -11, -12, -13)]
+# # removing lastname, firstname, gender, e_score, d_score, penalty
+# women_later_scores <- later_scores[later_scores$gender == "w", c(-1, -2, -3, -11, -12, -13)]
 # 
 # #=== Men's Score LME Model ===#
 # # define the number of folds for cross-validation
@@ -387,7 +389,8 @@ w_VT_mean <- w_VT %>% group_by(fullname) %>% summarise(mean_lmer1 = mean(lmer1))
 #   test.rows <- men_later_scores$fold == j
 # 
 #   # fit a linear mixed-effects model (lmer) to the training data
-#   lm1 <- lm(score ~ fullname + rank + competition + apparatus + round, data = men_later_scores)
+#   lm1 <- lm(score ~ fullname + rank + competition + apparatus + round,
+#             data = men_later_scores)
 # 
 #   # predict the scores on the test data using the trained model
 #   men_later_scores[test.rows,]$lm1 <- predict(lm1, newdata = men_later_scores[test.rows,],
@@ -419,7 +422,8 @@ w_VT_mean <- w_VT %>% group_by(fullname) %>% summarise(mean_lmer1 = mean(lmer1))
 #   test.rows <- women_later_scores$fold == j
 # 
 #   # fit a linear mixed-effects model (lmer) to the training data
-#   lm1 <- lm(score ~ fullname + rank + competition + apparatus + round + date, data = women_later_scores)
+#   lm1 <- lm(score ~ fullname + rank + competition + apparatus + round + date,
+#             data = women_later_scores)
 # 
 #   # predict the scores on the test data using the trained model
 #   women_later_scores[test.rows,]$lm1 <- predict(lm1, newdata = women_later_scores[test.rows,],

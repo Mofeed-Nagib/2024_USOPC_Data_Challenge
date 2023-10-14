@@ -61,7 +61,8 @@ clean_data <- function(in_data) {
     mutate(date = as.Date(date))
   
   # error catch for date handling
-  if (any(is.na(gym_data$date))) {message("Warning: dates may not have processed properly. Some dates now NA.")}
+  if (any(is.na(gym_data$date)))
+    {message("Warning: dates may not have processed properly. Some dates now NA.")}
   
   # Remove rows that are exact duplicates
   gym_data <- gym_data[!duplicated(gym_data), ]
