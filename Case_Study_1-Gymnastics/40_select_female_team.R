@@ -127,7 +127,7 @@ for (trial in 1:trials) {
 # test
 # team_combo <- 1
 # only running simulation for two teams for now!!
-if (is.na(n_team_combos)) {n_team_combos <- nrow(df_female_us_teams)}
+if (is.na(women_team_combos)) {women_team_combos <- nrow(df_female_us_teams)}
 
 for (team_combo in 1:n_team_combos) {
   # print statement

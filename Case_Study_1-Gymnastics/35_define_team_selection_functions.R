@@ -51,7 +51,7 @@ event_final <- function(in_apparatus, in_trial_number, opt_gender) {
   
   if (in_apparatus != 'aa') {
     # get final score for each competitor
-    competitors <- sub_event_scores %>% filter(fullname %in% sel_competitors) %>% select(c('fullname', 'country', paste0(in_apparatus, "_", in_trial_number)))
+    competitors <- sub_event_scores %>% filter(fullname %in% sel_competitors) %>% dplyr::select(fullname, country, paste0(in_apparatus, "_", in_trial_number))
     data.table::setnames(competitors, paste0(in_apparatus, "_", in_trial_number), 'final_score')
   } else if (opt_gender == 'w') {
     
@@ -81,7 +81,7 @@ event_final <- function(in_apparatus, in_trial_number, opt_gender) {
   winners <- competitors %>% 
     arrange(desc(final_score)) %>% 
     head(3) %>% 
-    select(fullname, country, final_score) %>% 
+    dplyr::select(fullname, country, final_score) %>% 
     mutate(final_type = in_apparatus)
   
   # add on medal color as column and subset to us only 

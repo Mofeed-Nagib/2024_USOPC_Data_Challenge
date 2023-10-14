@@ -151,7 +151,7 @@ for (trial in 1:trials) {
 # test
 # team_combo <- 1
 # only running simulation for two teams for now!!
-if (is.na(n_team_combos)) {n_team_combos <- nrow(df_male_us_teams)}
+if (is.na(men_team_combos)) {men_team_combos <- nrow(df_male_us_teams)}
 
 for (team_combo in 1:n_team_combos) {
   # print statement
@@ -296,7 +296,7 @@ for (team_combo in 1:n_team_combos) {
     team_winners <- team_final %>% 
       arrange(desc(final_score)) %>% 
       head(3) %>% 
-      select(country, final_score) %>% 
+      dplyr::select(country, final_score) %>% 
       mutate(final_type = "team")
     
     # add on medal color as column and subset to us only 
