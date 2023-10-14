@@ -26,6 +26,7 @@ source("Case_Study_1-Gymnastics/00_get_data.r")
 source("Case_Study_1-Gymnastics/10_prep_data.r")
 
 # Run initial models to predict scores and variance for each athlete
+source("Case_Study_1-Gymnastics/Mixed Effects Model.r")
 source("Case_Study_1-Gymnastics/20_fit_model.r")
 
 # Prepare for team selection (create combinations of teams, etc)
