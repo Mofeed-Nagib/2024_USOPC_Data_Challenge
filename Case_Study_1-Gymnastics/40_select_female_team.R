@@ -1,6 +1,11 @@
 ## This script uses the distributions we created / scores we predicted in previous scripts
 ## to select the optimal female gymnastics team!
 
+# setup parallel processing
+n.cores = detectCores() - 2
+cl = makeCluster(n.cores)
+registerDoSNOW(cl)
+
 # create list to hold output
 out_female_medal_winners <- list()
 
@@ -63,7 +68,6 @@ qual_competitors <- qual_competitors[!duplicated(qual_competitors),]
 # stack on us competitors
 qual_competitors <- rbind(qual_competitors, us_mean_scores)
 
-
 # now actually simulate qual scores
 qual_scores <- qual_competitors %>%
   rowwise() %>%
@@ -124,9 +128,6 @@ for (trial in 1:trials) {
 #=======================#
 
 # Run female simulations
-# test
-# team_combo <- 1
-# only running simulation for two teams for now!!
 if (is.na(women_team_combos)) {women_team_combos <- nrow(df_female_us_teams)}
 
 for (team_combo in 1:women_team_combos) {
@@ -140,12 +141,14 @@ for (team_combo in 1:women_team_combos) {
   sub_aa_scores <- aa_final_scores %>% filter(country != 'USA' | fullname %in% as.character(df_female_us_teams[team_combo,1:5]))
   sub_team_scores <- team_final_scores %>% filter(country != 'USA' | fullname %in% as.character(df_female_us_teams[team_combo,1:5]))
   
-  # Create team scores 
+  # Create team scores
   # create list to hold the teams moving on to final
   teams_in_final <- list()
   
   # for each trial, calculate team scores and aa scores
-  for (trial in 1:trials) {
+  teams_in_final <- foreach(trial = 1:trials) %dopar% {
+    
+    library(dplyr)
     
     # 4 up, 3 count rule: only the top 3 scores on each event count for each country
     fx_scores <- simulated_scores %>% 
@@ -208,9 +211,12 @@ for (team_combo in 1:women_team_combos) {
   sub_team_scores[sub_team_scores$fullname %in% bb_min,startsWith(colnames(sub_team_scores),"bb")] <- NA
   sub_team_scores[sub_team_scores$fullname %in% ub_min,startsWith(colnames(sub_team_scores),"ub")] <- NA
   
-  # Now, for each trial 
-  # test trial <- 1
-  for (trial in 1:trials) {
+  
+  # Now, for each trial
+  ls_medal_winners <- foreach(trial = 1:trials) %dopar% {
+    
+    library(dplyr)
+    source("Case_Study_1-Gymnastics/35_define_team_selection_functions.R")
     
     #====================#
     #=== event finals ===#
@@ -234,7 +240,7 @@ for (team_combo in 1:women_team_combos) {
     
     # subset team scores dataframe to countries that qualified for the team final
     team_competitors <- sub_team_scores %>%
-                       filter(country %in% teams_in_final[[paste0("trial_", trial)]])
+                       filter(country %in% teams_in_final[[trial]])
     
     # tally scores by country
     team_final <- team_competitors %>% 
@@ -263,11 +269,8 @@ for (team_combo in 1:women_team_combos) {
     out_us_results <- plyr::rbind.fill(fx_final, vt_final, bb_final, ub_final, aa_final, out_team_winners)
 
     # save results to an object
-    ls_medal_winners[[paste0("trial_", trial)]] <- out_us_results
+    ls_medal_winners[[trial]] <- out_us_results
   }
-  
-  # Use the US outcomes to calculate 'weighted medal count' for each trial
-  #lapply(ls_medal_winners, medal_count, in_team_combo = team_combo)
   
   for (trial in 1:trials) {
     
@@ -282,3 +285,7 @@ for (team_combo in 1:women_team_combos) {
   out_female_medal_winners[[paste0("team_combo_", team_combo)]] <- ls_medal_winners
 }
 
+stopCluster(cl)
+
+# reload all necessary packages
+source("Case_Study_1-Gymnastics/00_get_data.r")
