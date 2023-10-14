@@ -22,12 +22,13 @@ mens_known_qualifiers   <- c('CHN', 'JPN', 'GBR', 'USA', 'CAN', 'GER', 'ITA', 'S
 # Grab data
 source("Case_Study_1-Gymnastics/00_get_data.r")
 
-# Prepare and clean data for modeling 
+# Prepare and clean data for modeling
 source("Case_Study_1-Gymnastics/10_prep_data.r")
+source("Case_Study_1-Gymnastics/15_qualifying_gymnast_data_prep.R")
 
 # Run initial models to predict scores and variance for each athlete
-source("Case_Study_1-Gymnastics/Mixed Effects Model.r")
-source("Case_Study_1-Gymnastics/20_fit_model.r")
+source("Case_Study_1-Gymnastics/20_mixed_effects_model.R")
+source("Case_Study_1-Gymnastics/25_fit_model.r")
 
 # Prepare for team selection (create combinations of teams, etc)
 source("Case_Study_1-Gymnastics/30_prepare_to_select.r")
