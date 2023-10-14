@@ -6,3 +6,4 @@ saveRDS(out_female_medal_winners, file = "Case_Study_1-Gymnastics/gymnastics_app
 
 saveRDS(df_male_us_teams, file = "Case_Study_1-Gymnastics/final_output/male_results.RDS")
 write_csv2(df_male_us_teams, file = "Case_Study_1-Gymnastics/final_output/male_results.csv")
+saveRDS(out_male_medal_winners, file = "Case_Study_1-Gymnastics/gymnastics_app/data/male_medals.RDS")
