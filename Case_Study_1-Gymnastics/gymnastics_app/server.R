@@ -6,6 +6,9 @@ library(dplyr)
 # Define server logic required to draw a histogram
 function(input, output, session) {
 
+  #=======================================#
+  #=== make datasets with medal counts ===#
+  #=======================================#
   # create datasets with weighted medals
   mod_female_teams <- reactive({
     
