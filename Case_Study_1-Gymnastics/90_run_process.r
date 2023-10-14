@@ -8,6 +8,7 @@
 trials <- 10
 n_team_combos <- NA # if you only want to run some team combos instead of all
 
+# vector of apparatus competition events 
 womens_apparatus <- c('fx', 'vt', 'bb', 'ub')
 mens_apparatus   <- c('fx', 'vt', 'hb', 'pb', 'sr', 'ph')
 
