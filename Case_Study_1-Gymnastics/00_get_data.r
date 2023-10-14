@@ -38,5 +38,6 @@ library(doSNOW)
 library(foreach)
 library(parallel)
 
+# read in older and newer gymnastics datasets
 in_earlier_scores <- read.csv("Case_Study_1-Gymnastics/data/data_2017_2021.csv")
 in_later_scores   <- read.csv("Case_Study_1-Gymnastics/data/data_2022_2023.csv")
