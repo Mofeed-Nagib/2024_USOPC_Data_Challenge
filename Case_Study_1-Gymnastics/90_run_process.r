@@ -24,23 +24,24 @@ mens_known_qualifiers   <- c('CHN', 'JPN', 'GBR', 'USA', 'CAN', 'GER',
 #===================#
 
 # Grab data
-source("Case_Study_1-Gymnastics/00_get_data.r")
+source("Case_Study_1-Gymnastics/00_get_data.R")
 
 # Prepare and clean data for modeling
-source("Case_Study_1-Gymnastics/10_prep_data.r")
+source("Case_Study_1-Gymnastics/10_prep_data.R")
 source("Case_Study_1-Gymnastics/15_qualifying_gymnast_data_prep.R")
 
 # Run initial models to predict scores and variance for each athlete
 source("Case_Study_1-Gymnastics/20_mixed_effects_model.R")
-source("Case_Study_1-Gymnastics/25_fit_model.r")
+source("Case_Study_1-Gymnastics/25_fit_model.R")
 
 # Prepare for team selection (create combinations of teams, etc)
-source("Case_Study_1-Gymnastics/30_prepare_to_select.r")
-source("Case_Study_1-Gymnastics/35_define_team_selection_functions.r")
+source("Case_Study_1-Gymnastics/30_prepare_to_select.R")
+source("Case_Study_1-Gymnastics/35_define_team_selection_functions.R")
 
 # Use predicted scores and additional considerations/probabilities to select team
-source("Case_Study_1-Gymnastics/40_select_female_team.r")
-source("Case_Study_1-Gymnastics/40_select_male_team.r")
+source("Case_Study_1-Gymnastics/40_select_female_team.R")
+# source("Case_Study_1-Gymnastics/40_select_male_team.R")
 
 # Last step: Create final output (not sure what this will look like yet exactly, 
 # so not creating a script for now)
+# source("Case_Study_1-Gymnastics/50_export_output.R")

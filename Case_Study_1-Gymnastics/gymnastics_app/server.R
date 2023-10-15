@@ -118,7 +118,7 @@ function(input, output, session) {
                          mutate(final_type = as.factor(toupper(final_type)),
                                 medal = as.factor(stringr::str_to_title(medal))) %>% 
                          group_by(fullname, final_type, medal) %>% 
-                         summarise(proportion = 100 * n()/n_trials)
+                         summarise(proportion = 100 * n()/n_w_trials)
     
      return(agg_medal_winners)
   })
@@ -147,7 +147,7 @@ function(input, output, session) {
       mutate(final_type = as.factor(toupper(final_type)),
              medal = as.factor(stringr::str_to_title(medal))) %>% 
       group_by(fullname, final_type, medal) %>% 
-      summarise(proportion = 100 * n()/n_trials)
+      summarise(proportion = 100 * n()/n_m_trials)
     
     return(agg_medal_winners)
   })

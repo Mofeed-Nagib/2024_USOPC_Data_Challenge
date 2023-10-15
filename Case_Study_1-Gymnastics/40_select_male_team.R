@@ -346,7 +346,7 @@ for (team_combo in 1:men_team_combos) {
   
   for (trial in 1:trials) {
     
-    medals <- ls_medal_winners[[paste0("trial_", trial)]]$medal
+    medals <- ls_medal_winners[[trial]]$medal
     wt_count <- 3 * sum(medals == 'gold') + 2 * sum(medals == 'silver') + sum(medals == 'bronze')
     # add weighted count to dataframe
     df_male_us_teams[team_combo, paste0('wt_count_trial_', trial)] <- wt_count
@@ -360,4 +360,4 @@ for (team_combo in 1:men_team_combos) {
 stopCluster(cl)
 
 # reload all necessary packages
-source("Case_Study_1-Gymnastics/00_get_data.r")
+source("Case_Study_1-Gymnastics/00_get_data.R")
