@@ -40,7 +40,7 @@ source("Case_Study_1-Gymnastics/35_define_team_selection_functions.R")
 
 # Use predicted scores and additional considerations/probabilities to select team
 source("Case_Study_1-Gymnastics/40_select_female_team.R")
-# source("Case_Study_1-Gymnastics/40_select_male_team.R")
+source("Case_Study_1-Gymnastics/40_select_male_team.R")
 
 # Last step: Create final output (not sure what this will look like yet exactly, 
 # so not creating a script for now)

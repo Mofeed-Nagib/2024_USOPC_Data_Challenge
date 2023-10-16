@@ -198,42 +198,42 @@ for (team_combo in 1:men_team_combos) {
                  group_by(country) %>% 
                  slice_max(fx_mean, n = 4) %>%
                  slice_max(get(paste0("fx_", trial)), n = 3) %>% 
-                 summarise(fx_score = sum(get(paste0("fx_", trial)), na.rm = T))
+                 summarise(fx_score = sum(get(paste0("fx_", trial)), na.rm = TRUE))
     
     vt_scores <- simulated_scores %>% 
                  filter(flag_team == 1) %>% 
                  group_by(country) %>% 
                  slice_max(vt_mean, n = 4) %>%
                  slice_max(get(paste0("vt_", trial)), n = 3) %>% 
-                 summarise(vt_score = sum(get(paste0("vt_", trial)), na.rm = T))
+                 summarise(vt_score = sum(get(paste0("vt_", trial)), na.rm = TRUE))
     
     hb_scores <- simulated_scores %>% 
                  filter(flag_team == 1) %>% 
                  group_by(country) %>% 
                  slice_max(hb_mean, n = 4) %>%
                  slice_max(get(paste0("hb_", trial)), n = 3) %>% 
-                 summarise(hb_score = sum(get(paste0("hb_", trial)), na.rm = T))
+                 summarise(hb_score = sum(get(paste0("hb_", trial)), na.rm = TRUE))
     
     pb_scores <- simulated_scores %>% 
                  filter(flag_team == 1) %>% 
                  group_by(country) %>% 
                  slice_max(pb_mean, n = 4) %>%
                  slice_max(get(paste0("pb_", trial)), n = 3) %>% 
-                 summarise(pb_score = sum(get(paste0("pb_", trial)), na.rm = T))
+                 summarise(pb_score = sum(get(paste0("pb_", trial)), na.rm = TRUE))
     
     sr_scores <- simulated_scores %>% 
                  filter(flag_team == 1) %>% 
                  group_by(country) %>% 
                  slice_max(sr_mean, n = 4) %>%
                  slice_max(get(paste0("sr_", trial)), n = 3) %>% 
-                 summarise(sr_score = sum(get(paste0("sr_", trial)), na.rm = T))
+                 summarise(sr_score = sum(get(paste0("sr_", trial)), na.rm = TRUE))
     
     ph_scores <- simulated_scores %>% 
                  filter(flag_team == 1) %>% 
                  group_by(country) %>% 
                  slice_max(ph_mean, n = 4) %>%
                  slice_max(get(paste0("ph_", trial)), n = 3) %>% 
-                 summarise(ph_score = sum(get(paste0("ph_", trial)), na.rm = T))
+                 summarise(ph_score = sum(get(paste0("ph_", trial)), na.rm = TRUE))
     
     # merge them together into one dataframe so we can sum
     team_by_apparatus <- fx_scores %>% 
@@ -314,12 +314,12 @@ for (team_combo in 1:men_team_combos) {
     # tally scores by country
     team_final <- team_competitors %>% 
                   group_by(country) %>% 
-                  summarise(final_score = sum(get(paste0('fx_', trial)), na.rm = T) +
-                                          sum(get(paste0('vt_', trial)), na.rm = T) +
-                                          sum(get(paste0('hb_', trial)), na.rm = T) +
-                                          sum(get(paste0('pb_', trial)), na.rm = T) +
-                                          sum(get(paste0('sr_', trial)), na.rm = T) +
-                                          sum(get(paste0('ph_', trial)), na.rm = T))
+                  summarise(final_score = sum(get(paste0('fx_', trial)), na.rm = TRUE) +
+                                          sum(get(paste0('vt_', trial)), na.rm = TRUE) +
+                                          sum(get(paste0('hb_', trial)), na.rm = TRUE) +
+                                          sum(get(paste0('pb_', trial)), na.rm = TRUE) +
+                                          sum(get(paste0('sr_', trial)), na.rm = TRUE) +
+                                          sum(get(paste0('ph_', trial)), na.rm = TRUE))
     
     # get the team winners, add on apparatus as a column
     team_winners <- team_final %>% 
@@ -348,9 +348,9 @@ for (team_combo in 1:men_team_combos) {
     
     medals <- ls_medal_winners[[trial]]$medal
     wt_count <- 3 * sum(medals == 'gold') + 2 * sum(medals == 'silver') + sum(medals == 'bronze')
+    
     # add weighted count to dataframe
     df_male_us_teams[team_combo, paste0('wt_count_trial_', trial)] <- wt_count
-    
   }
   
   # save medal winners to an object
