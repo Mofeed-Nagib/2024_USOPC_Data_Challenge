@@ -1,2 +1,1 @@
-# S&DS 425
-## Case Study 1: Gymnastics
+# Case Study 1: Gymnastics
