@@ -283,7 +283,7 @@ for (team_combo in 1:men_team_combos) {
   ls_medal_winners <- foreach(trial = 1:trials) %dopar% {
     
     library(dplyr)
-    source("Case_Study_1-Gymnastics/35_define_team_selection_functions.R")
+    source("35_define_team_selection_functions.R")
     
     #====================#
     #=== event finals ===#
@@ -360,4 +360,4 @@ for (team_combo in 1:men_team_combos) {
 stopCluster(cl)
 
 # reload all necessary packages
-source("Case_Study_1-Gymnastics/00_get_data.R")
+source("00_get_data.R")
