@@ -114,7 +114,7 @@ expired_players <- later_scores %>%
                    filter(country == 'USA') %>% 
                    group_by(fullname) %>% 
                    summarise(most_recent_compete = max(date, na.rm = TRUE)) %>% 
-                   filter(most_recent_compete < ymd(Sys.Date()) - years(1)) %>% 
+                   filter(most_recent_compete < ymd(Sys.Date()) - years(past_years)) %>% 
                    pull(fullname)
 
 # remove them from our bank of us athletes

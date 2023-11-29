@@ -9,6 +9,10 @@ trials <- 10
 women_team_combos <- NA # if you only want to run a certain number of team combos instead of all
 men_team_combos <- NA # if you only want to run a certain number of team combos instead of all
 
+# if this parameter is set to 1, only players who have competed in the last year will be considered
+# similarly, if this parameter is set to 2, only players who have competed in the last 2 years can be considered
+past_years <- 1
+
 # vector of apparatus competition events 
 womens_apparatus <- c('fx', 'vt', 'bb', 'ub')
 mens_apparatus   <- c('fx', 'vt', 'hb', 'pb', 'sr', 'ph')
