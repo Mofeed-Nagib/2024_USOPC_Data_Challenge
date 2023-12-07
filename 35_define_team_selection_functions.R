@@ -37,8 +37,54 @@ select_competitors <- function(apparatus, select_from_data, from_each_country, a
 # create function to simulate event finals
 event_final <- function(in_apparatus, in_trial_number, opt_gender) {
   
+  # subset down to just the competitors on that event 
+  # if it's not aa, we take top 4 mean scores per country to determine competitors
+  if (in_apparatus != 'aa') {
+    event_scores <- simulated_scores %>% 
+                    group_by(country) %>% 
+                    slice_max(get(paste0(in_apparatus, "_mean")), n = 4)
+  } else if (opt_gender == 'w') {
+    # otherwise, if apparatus is aa, take competitors that are in their country's top 4 on all events
+    floor_competitors <- simulated_scores %>% 
+                         group_by(country) %>% 
+                         slice_max(fx_mean, n = 4)
+    beam_competitors  <- simulated_scores %>% 
+                         group_by(country) %>% 
+                         slice_max(bb_mean, n = 4)
+    vault_competitors <- simulated_scores %>% 
+                         group_by(country) %>% 
+                         slice_max(vt_mean, n = 4)
+    bars_competitors  <- simulated_scores %>% 
+                         group_by(country) %>% 
+                         slice_max(ub_mean, n = 4)
+    
+    event_scores <- simulated_scores %>% 
+                    filter(fullname %in% floor_competitors$fullname & fullname %in% beam_competitors$fullname & fullname %in% vault_competitors$fullname & fullname %in% bars_competitors$fullname)
+  } else if (opt_gender == 'm') {
+    floor_competitors <- simulated_scores %>% 
+                         group_by(country) %>% 
+                         slice_max(fx_mean, n = 4)
+    highbar_competitors  <- simulated_scores %>% 
+                            group_by(country) %>% 
+                            slice_max(hb_mean, n = 4)
+    vault_competitors <- simulated_scores %>% 
+                         group_by(country) %>% 
+                         slice_max(vt_mean, n = 4)
+    pbar_competitors  <- simulated_scores %>% 
+                         group_by(country) %>% 
+                         slice_max(pb_mean, n = 4)
+    phor_competitors  <- simulated_scores %>% 
+                         group_by(country) %>% 
+                         slice_max(ph_mean, n = 4)
+    ring_competitors  <- simulated_scores %>% 
+                         group_by(country) %>% 
+                         slice_max(sr_mean, n = 4)
+    event_scores <- simulated_scores %>% 
+      filter(fullname %in% floor_competitors$fullname & fullname %in% highbar_competitors$fullname & fullname %in% vault_competitors$fullname & fullname %in% pbar_competitors$fullname & fullname %in% phor_competitors$fullname & fullname %in% ring_competitors$fullname)
+  }
+  
   # 2 per country rule: can have max of 2 athletes per country in each final
-  sub_simulated_scores <- simulated_scores %>% 
+  sub_simulated_scores <- event_scores %>% 
                           filter(!is.na(get(paste0(in_apparatus, "_", in_trial_number)))) %>% 
                           group_by(country) %>% 
                           slice_max(order_by = get(paste0(in_apparatus, "_", in_trial_number)), n = 2)
@@ -91,3 +137,4 @@ event_final <- function(in_apparatus, in_trial_number, opt_gender) {
   
   return(out_winners)
 }
+
