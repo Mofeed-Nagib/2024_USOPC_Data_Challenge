@@ -258,26 +258,30 @@ for (team_combo in 1:men_team_combos) {
   # create list to hold medal winners
   ls_medal_winners <- list()
   
-  # us team selection
-  fx_min <- sub_team_scores %>% filter(country == 'USA') %>%
-            slice_min(order_by = fx_mean, n = 1) %>% pull(fullname)
-  vt_min <- sub_team_scores %>% filter(country == 'USA') %>%
-            slice_min(order_by = vt_mean, n = 1) %>% pull(fullname)
-  hb_min <- sub_team_scores %>% filter(country == 'USA') %>%
-            slice_min(order_by = hb_mean, n = 1) %>% pull(fullname)
-  pb_min <- sub_team_scores %>% filter(country == 'USA') %>%
-            slice_min(order_by = pb_mean, n = 1) %>% pull(fullname)
-  sr_min <- sub_team_scores %>% filter(country == 'USA') %>%
-            slice_min(order_by = sr_mean, n = 1) %>% pull(fullname)
-  ph_min <- sub_team_scores %>% filter(country == 'USA') %>%
-            slice_min(order_by = ph_mean, n = 1) %>% pull(fullname)
-  
-  sub_team_scores[sub_team_scores$fullname %in% fx_min,startsWith(colnames(sub_team_scores),"fx")] <- NA
-  sub_team_scores[sub_team_scores$fullname %in% vt_min,startsWith(colnames(sub_team_scores),"vt")] <- NA
-  sub_team_scores[sub_team_scores$fullname %in% hb_min,startsWith(colnames(sub_team_scores),"hb")] <- NA
-  sub_team_scores[sub_team_scores$fullname %in% pb_min,startsWith(colnames(sub_team_scores),"pb")] <- NA
-  sub_team_scores[sub_team_scores$fullname %in% sr_min,startsWith(colnames(sub_team_scores),"sr")] <- NA
-  sub_team_scores[sub_team_scores$fullname %in% ph_min,startsWith(colnames(sub_team_scores),"ph")] <- NA
+  # team final: team lineup selection
+  for (current_country in unique(sub_team_scores$country)) {
+    
+    # team selection, get rid of lowest scorer
+    fx_max <- sub_team_scores %>% filter(country == current_country) %>% 
+      slice_max(order_by = fx_mean, n = 3) %>% pull(fullname)
+    vt_max <- sub_team_scores %>% filter(country == current_country) %>%
+      slice_max(order_by = vt_mean, n = 3) %>% pull(fullname)
+    hb_max <- sub_team_scores %>% filter(country == current_country) %>%
+      slice_max(order_by = hb_mean, n = 3) %>% pull(fullname)
+    pb_max <- sub_team_scores %>% filter(country == current_country) %>%
+      slice_max(order_by = pb_mean, n = 3) %>% pull(fullname)
+    sr_max <- sub_team_scores %>% filter(country == current_country) %>% 
+      slice_max(order_by = sr_mean, n = 3) %>% pull(fullname)
+    ph_max <- sub_team_scores %>% filter(country == current_country) %>% 
+      slice_max(order_by = ph_mean, n = 3) %>% pull(fullname)
+    
+    sub_team_scores[sub_team_scores$country == current_country & !(sub_team_scores$fullname %in% fx_max),startsWith(colnames(sub_team_scores),"fx")] <- NA
+    sub_team_scores[sub_team_scores$country == current_country & !(sub_team_scores$fullname %in% vt_max),startsWith(colnames(sub_team_scores),"vt")] <- NA
+    sub_team_scores[sub_team_scores$country == current_country & !(sub_team_scores$fullname %in% hb_max),startsWith(colnames(sub_team_scores),"hb")] <- NA
+    sub_team_scores[sub_team_scores$country == current_country & !(sub_team_scores$fullname %in% pb_max),startsWith(colnames(sub_team_scores),"pb")] <- NA
+    sub_team_scores[sub_team_scores$country == current_country & !(sub_team_scores$fullname %in% sr_max),startsWith(colnames(sub_team_scores),"sr")] <- NA
+    sub_team_scores[sub_team_scores$country == current_country & !(sub_team_scores$fullname %in% ph_max),startsWith(colnames(sub_team_scores),"ph")] <- NA
+  }
   
   # Now, for each trial 
   ls_medal_winners <- foreach(trial = 1:trials) %dopar% {
