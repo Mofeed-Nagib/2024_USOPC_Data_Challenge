@@ -218,13 +218,13 @@ for (team_combo in 1:women_team_combos) {
     
     # team selection, get rid of lowest scorer
     fx_max <- sub_team_scores %>% filter(country == current_country) %>% 
-      slice_min(order_by = fx_mean, n = 3) %>% pull(fullname)
+      slice_max(order_by = fx_mean, n = 3) %>% pull(fullname)
     vt_max <- sub_team_scores %>% filter(country == current_country) %>%
-      slice_min(order_by = vt_mean, n = 3) %>% pull(fullname)
+      slice_max(order_by = vt_mean, n = 3) %>% pull(fullname)
     bb_max <- sub_team_scores %>% filter(country == current_country) %>%
-      slice_min(order_by = bb_mean, n = 3) %>% pull(fullname)
+      slice_max(order_by = bb_mean, n = 3) %>% pull(fullname)
     ub_max <- sub_team_scores %>% filter(country == current_country) %>%
-      slice_min(order_by = ub_mean, n = 3) %>% pull(fullname)
+      slice_max(order_by = ub_mean, n = 3) %>% pull(fullname)
     
     sub_team_scores[sub_team_scores$country == current_country & !(sub_team_scores$fullname %in% fx_max),startsWith(colnames(sub_team_scores),"fx")] <- NA
     sub_team_scores[sub_team_scores$country == current_country & !(sub_team_scores$fullname %in% vt_max),startsWith(colnames(sub_team_scores),"vt")] <- NA
