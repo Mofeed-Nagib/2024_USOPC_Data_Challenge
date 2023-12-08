@@ -213,20 +213,25 @@ for (team_combo in 1:women_team_combos) {
   # create list to hold medal winners
   ls_medal_winners <- list()
   
-  # us team selection
-  fx_min <- sub_team_scores %>% filter(country == 'USA') %>% 
-            slice_min(order_by = fx_mean, n = 1) %>% pull(fullname)
-  vt_min <- sub_team_scores %>% filter(country == 'USA') %>%
-            slice_min(order_by = vt_mean, n = 1) %>% pull(fullname)
-  bb_min <- sub_team_scores %>% filter(country == 'USA') %>%
-            slice_min(order_by = bb_mean, n = 1) %>% pull(fullname)
-  ub_min <- sub_team_scores %>% filter(country == 'USA') %>%
-            slice_min(order_by = ub_mean, n = 1) %>% pull(fullname)
-  
-  sub_team_scores[sub_team_scores$fullname %in% fx_min,startsWith(colnames(sub_team_scores),"fx")] <- NA
-  sub_team_scores[sub_team_scores$fullname %in% vt_min,startsWith(colnames(sub_team_scores),"vt")] <- NA
-  sub_team_scores[sub_team_scores$fullname %in% bb_min,startsWith(colnames(sub_team_scores),"bb")] <- NA
-  sub_team_scores[sub_team_scores$fullname %in% ub_min,startsWith(colnames(sub_team_scores),"ub")] <- NA
+  # team final: team lineup selection
+  for (current_country in unique(sub_team_scores$country)) {
+    
+    # team selection, get rid of lowest scorer
+    fx_max <- sub_team_scores %>% filter(country == current_country) %>% 
+      slice_min(order_by = fx_mean, n = 3) %>% pull(fullname)
+    vt_max <- sub_team_scores %>% filter(country == current_country) %>%
+      slice_min(order_by = vt_mean, n = 3) %>% pull(fullname)
+    bb_max <- sub_team_scores %>% filter(country == current_country) %>%
+      slice_min(order_by = bb_mean, n = 3) %>% pull(fullname)
+    ub_max <- sub_team_scores %>% filter(country == current_country) %>%
+      slice_min(order_by = ub_mean, n = 3) %>% pull(fullname)
+    
+    sub_team_scores[sub_team_scores$country == current_country & !(sub_team_scores$fullname %in% fx_max),startsWith(colnames(sub_team_scores),"fx")] <- NA
+    sub_team_scores[sub_team_scores$country == current_country & !(sub_team_scores$fullname %in% vt_max),startsWith(colnames(sub_team_scores),"vt")] <- NA
+    sub_team_scores[sub_team_scores$country == current_country & !(sub_team_scores$fullname %in% bb_max),startsWith(colnames(sub_team_scores),"bb")] <- NA
+    sub_team_scores[sub_team_scores$country == current_country & !(sub_team_scores$fullname %in% ub_max),startsWith(colnames(sub_team_scores),"ub")] <- NA
+    
+  }
   
   
   # Now, for each trial
