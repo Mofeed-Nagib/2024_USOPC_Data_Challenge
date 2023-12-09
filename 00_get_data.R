@@ -33,6 +33,7 @@ library(RecordLinkage)
 library(rsconnect)
 library(tidyverse)
 library(pubtheme)
+library(countrycode)
 
 # load the libraries for parallel processing
 library(doSNOW)

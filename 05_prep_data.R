@@ -41,7 +41,7 @@ clean_data <- function(in_data) {
   # Substitute England for United Kingdom
   gym_data$location <- sub("England", "United Kingdom", gym_data$location)
   # Substitute country codes
-  gym_data$location <- countrycode::countrycode(gym_data$location, "country.name.en", "ioc")
+  gym_data$location <- countrycode(gym_data$location, "country.name.en", "ioc")
   
   # Remove observations with NAs
   gym_data <- gym_data %>% filter(!is.na(score))
