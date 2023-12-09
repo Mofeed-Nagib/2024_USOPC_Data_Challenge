@@ -562,7 +562,7 @@ later_scores[later_scores$fullname == "Nikita Simonov",]$country <- "AZE"
   # Wei An Terry Tay
   later_scores[later_scores$fullname == "Terry Tay Wei An",]$fullname <- "Wei An Terry Tay"
 # SLO
-  # N/A
+  later_scores[later_scores$fullname == "Teja Belak",]$country <- "SLO"
 # SRB
   # N/A
 # SRI

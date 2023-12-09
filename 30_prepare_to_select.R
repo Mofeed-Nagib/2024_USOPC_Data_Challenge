@@ -51,12 +51,14 @@ known_men_dnq <- c("Milad Karimi", "Artem Dolgopyat", "Artur Davtyan",
                    "Krisztofer Meszaros", "Junho Lee", "Diogo Soares",
                    "Luka Van Den Keybus", "Andrei Vasile Muntean",
                    "Rhys McClenaghan", "Eleftherios Petrounias", "Kevin Penev",
-                   "Noah Kuavita", "Tin Srbic", "Audrys Nin Reyes")
+                   "Noah Kuavita", "Tin Srbic", "Audrys Nin Reyes", 
+                   "Carlos Edriel Yulo")
 
-best_men_dnq <- later_player_scores %>% 
-                filter(fullname %in% known_men_dnq) %>% 
-                group_by(fullname, country) %>% 
-                arrange(-avg_score)
+top_men_dnq <- later_player_scores %>% 
+               filter(fullname %in% known_men_dnq) %>% 
+               group_by(fullname, country) %>% 
+               arrange(-avg_score) %>%
+               mutate(flag_team = 0)
 
 known_women_dnq <- c("Kaylia Nemour", "Pauline Schaefer Betz", "Alexa Citlali Moreno Medina",
                      "Filipa Martins", "Aleah Finnegan", "Bettina Lili Czifra",
@@ -66,30 +68,35 @@ known_women_dnq <- c("Kaylia Nemour", "Pauline Schaefer Betz", "Alexa Citlali Mo
                      "Csenge Maria Bacskay", "Ahtziri Viridiana Sandoval", 
                      "Ana Perez", "Sarah Voss", "Luisa Blanco", "Rifda Irfanaluthfi")
 
-best_women_dnq <- later_player_scores %>% 
-                  filter(fullname %in% known_women_dnq) %>% 
-                  group_by(fullname, country) %>% 
-                  arrange(-avg_score)
+top_women_dnq <- later_player_scores %>% 
+                 filter(fullname %in% known_women_dnq) %>% 
+                 group_by(fullname, country) %>% 
+                 arrange(-avg_score) %>%
+                 mutate(flag_team = 0)
 
 # determine the rest of the best 36 gymnasts whose teams did not qualify
 # (maximum of 3 individuals per country)
-best_men_dnq <- later_player_scores %>% 
+best_men_dnq <- later_player_scores %>%
                 filter(!(country %in% men_countries) &
-                       !(fullname %in% known_men_dnq) & gender == 'm') %>% 
-                group_by(fullname, country) %>% 
-                arrange(-avg_score) %>% 
-                head(36 - nrow(best_men_dnq)) %>% 
+                       !(fullname %in% known_men_dnq) & gender == 'm') %>%
+                arrange(-avg_score) %>%
+                group_by(country) %>%
+                slice_head(n = 3) %>%
+                arrange(-avg_score) %>%
+                head(36 - nrow(top_men_dnq)) %>%
                 mutate(flag_team = 0) %>%
-                rbind(best_men_dnq)
+                rbind(top_men_dnq)
 
 best_women_dnq <- later_player_scores %>% 
                   filter(!(country %in% women_countries) &
                          !(fullname %in% known_women_dnq) & gender == 'w') %>% 
-                  group_by(fullname, country) %>% 
-                  arrange(-avg_score) %>% 
-                  head(36 - nrow(best_women_dnq)) %>% 
+                  arrange(-avg_score) %>%
+                  group_by(country) %>%
+                  slice_head(n = 3) %>%
+                  arrange(-avg_score) %>%
+                  head(36 - nrow(top_women_dnq)) %>% 
                   mutate(flag_team = 0) %>%
-                  rbind(best_women_dnq)
+                  rbind(top_women_dnq)
 
 #=======================#
 #=== get us athletes ===#

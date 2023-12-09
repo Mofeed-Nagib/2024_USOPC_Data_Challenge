@@ -31,7 +31,8 @@ mens_known_qualifiers   <- c('CHN', 'JPN', 'GBR', 'USA', 'CAN', 'GER',
 source("00_get_data.R")
 
 # Prepare and clean data for modeling
-source("10_prep_data.R")
+source("05_prep_data.R")
+source("10_clean_data.R")
 source("15_qualifying_gymnast_data_prep.R")
 
 # Run initial models to predict scores and variance for each athlete
