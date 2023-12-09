@@ -1,8 +1,5 @@
 ## This script cleans the raw gymnastics data in preparation for modeling.
 
-in_earlier_scores
-in_later_scores
-
 # Create function to clean data
 clean_data <- function(in_data) {
   
@@ -18,17 +15,33 @@ clean_data <- function(in_data) {
   # Fix country codes
   gym_data$country <- gsub("\\<GE1\\>|\\<GE2\\>", "GER", gym_data$country)
   gym_data$country <- gsub("\\<ENG\\>", "GBR", gym_data$country)
+  gym_data$country <- gsub("NIR", "IRL", gym_data$country)
+  gym_data$country <- gsub("SIN", "SGP", gym_data$country)
   gym_data$country[gym_data$country == ""] <- NA
   
   # Format gymnast names, fix capitalization
-  gym_data <- gym_data %>% mutate(firstname = str_to_title(firstname),
-                                  lastname  = str_to_title(lastname))
+  gym_data <- gym_data %>% 
+              mutate(firstname = str_to_title(firstname),
+                     firstname = str_trim(firstname, side = "both"),
+                     lastname  = str_to_title(lastname),
+                     lastname = str_trim(lastname, side = "both"))
   
   # Combine gymnast first and last names
   gym_data$fullname <- trimws(paste(gym_data$firstname, gym_data$lastname))
   
-  # Fix penalties NAs be 0s
-  gym_data$penalty[is.na(gym_data$penalty)] <- 0
+  # Calculate NA penalty values based on scores
+  gym_data$penalty[which(is.na(gym_data$penalty))] <- pmax(0, round(gym_data$d_score[which(is.na(gym_data$penalty))] +
+                                                                    gym_data$e_score[which(is.na(gym_data$penalty))] -
+                                                                    gym_data$score[which(is.na(gym_data$penalty))], 3))
+  
+  # Filter competition locations to country
+  gym_data$location <- gsub(".*, ", "", gym_data$location)
+  # Change US states to be US
+  gym_data$location <- sub("Utah|Illinois|FL|CA|Kentucky|Texas", "United States", gym_data$location)
+  # Substitute England for United Kingdom
+  gym_data$location <- sub("England", "United Kingdom", gym_data$location)
+  # Substitute country codes
+  gym_data$location <- countrycode::countrycode(gym_data$location, "country.name.en", "ioc")
   
   # Remove observations with NAs
   gym_data <- gym_data %>% filter(!is.na(score))
@@ -61,8 +74,8 @@ clean_data <- function(in_data) {
     mutate(date = as.Date(date))
   
   # error catch for date handling
-  if (any(is.na(gym_data$date)))
-    {message("Warning: dates may not have processed properly. Some dates now NA.")}
+  if (any(is.na(gym_data$date))) {
+    message("Warning: dates may not have processed properly. Some dates now NA.")}
   
   # Remove rows that are exact duplicates
   gym_data <- gym_data[!duplicated(gym_data), ]

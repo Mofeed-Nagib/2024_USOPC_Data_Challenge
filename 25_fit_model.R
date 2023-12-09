@@ -26,7 +26,7 @@ for (x in unique(later_scores$fullname)) {
       # get sample size of each gymnast + apparatus combo
       sample_size <- as.numeric(length(gymnast_apparatus_scores$score))
       
-      if (sample_size > 1 & sd(gymnast_apparatus_scores$score, na.rm=TRUE) != 0) {
+      if (sample_size > 1 & sd(gymnast_apparatus_scores$score, na.rm = TRUE) != 0) {
         # take mean of scores
         dist_mean <- mean(gymnast_apparatus_scores$score)
       

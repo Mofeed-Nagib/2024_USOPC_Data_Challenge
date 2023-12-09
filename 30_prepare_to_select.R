@@ -48,22 +48,23 @@ women_athletes <- later_player_scores %>%
 
 # known qualifiers of the best 36 gymnasts whose teams did not qualify
 known_men_dnq <- c("Milad Karimi", "Artem Dolgopyat", "Artur Davtyan",
-                   "Krisztofer Meszaros", "Lee Jun-ho", "Diogo Soares",
+                   "Krisztofer Meszaros", "Junho Lee", "Diogo Soares",
                    "Luka Van Den Keybus", "Andrei Vasile Muntean",
                    "Rhys McClenaghan", "Eleftherios Petrounias", "Kevin Penev",
-                   "Noah Kuavita", "Tin Srbic")
+                   "Noah Kuavita", "Tin Srbic", "Audrys Nin Reyes")
 
 best_men_dnq <- later_player_scores %>% 
                 filter(fullname %in% known_men_dnq) %>% 
                 group_by(fullname, country) %>% 
                 arrange(-avg_score)
 
-known_women_dnq <- c("Kaylia Nemour", "Pauline Schaefer Betz", "Alexa Moreno",
+known_women_dnq <- c("Kaylia Nemour", "Pauline Schaefer Betz", "Alexa Citlali Moreno Medina",
                      "Filipa Martins", "Aleah Finnegan", "Bettina Lili Czifra",
                      "Alba Petisco", "Anna Lashchevska", "Lena Bickel",
-                     "Hillary Heron Soto", "Caitlin Rooskrantz", "Sona Artamonova",
-                     "Lihie Raz", "Lucija Hribar", "Csenge Maria Bacskay",
-                     "Ahtziri Sandoval", "Ana Perez", "Sarah Voss")
+                     "Hillary Alexandra Heron Soto", "Caitlin Rooskrantz", 
+                     "Sona Artamonova", "Lihie Raz", "Lucija Hribar",
+                     "Csenge Maria Bacskay", "Ahtziri Viridiana Sandoval", 
+                     "Ana Perez", "Sarah Voss", "Luisa Blanco", "Rifda Irfanaluthfi")
 
 best_women_dnq <- later_player_scores %>% 
                   filter(fullname %in% known_women_dnq) %>% 
