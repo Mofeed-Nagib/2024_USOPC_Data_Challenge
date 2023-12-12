@@ -32,8 +32,8 @@ source("00_get_data.R")
 
 # Prepare and clean data for modeling
 source("05_prep_data.R")
-source("10_clean_data.R")
-source("15_qualifying_gymnast_data_prep.R")
+source("10_clean_name.R")
+source("15_clean_qualifiers.R")
 
 # Run initial models to predict scores and variance for each athlete
 source("20_mixed_effects_model.R")
