@@ -26,10 +26,10 @@
 	* **male_results.RDS:** This RDS object file contains the simulation results for the male gymnasts (a dataframe with all 1287 combinations and 100 trials for each combination)
 * **gymnastics_app/**
 	* **data/**
-		* **female_medals.RDS:** This RDS object file contains 
+		* **female_medals.RDS:** This RDS object file contains the female medal results based on the simulations
 		* **female_results.csv:** This CSV file contains the simulation results for the female gymnasts (a dataframe with all 126 combinations and 100 trials for each combination)
 		* **female_results.RDS:** This RDS object file contains the simulation results for the female gymnasts (a dataframe with all 126 combinations and 100 trials for each combination)
-		* **male_medals.RDS:** This RDS object file contains 
+		* **male_medals.RDS:** This RDS object file contains the male medal results based on the simulations
 		* **male_results.csv:** This CSV file contains the simulation results for the male gymnasts (a dataframe with all 1287 combinations and 100 trials for each combination)
 		* **male_results.RDS:** This RDS object file contains the simulation results for the male gymnasts (a dataframe with all 1287 combinations and 100 trials for each combination)
 	* **global.R:** This R script reads in the simulation output data to be displayed by our Shiny application
