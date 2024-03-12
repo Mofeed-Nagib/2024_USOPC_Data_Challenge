@@ -18,6 +18,8 @@
     # no changes needed
   # Andrei Vasile Muntean
     # no changes needed
+  # Carlos Edriel Yulo
+    # no changes needed
   # Rhys McClenaghan
     # no changes needed
   # Eleftherios Petrounias
@@ -28,9 +30,13 @@
     # no changes needed
   # Tin Srbic
     # no changes needed
-  # Audrys Nin Reyes
+  # Sunghyun Ryu
     # no changes needed
-  # Carlos Yulo
+  # Ahmad Abu Al Soud
+    # no changes needed
+  # Chia-Hung Tang
+    # no changes needed
+  # Audrys Nin Reyes
     # no changes needed
     
 # Clean up qualifying women's data
@@ -40,7 +46,7 @@
     # no changes needed
   # Alexa Citlali Moreno Medina
     # no changes needed
-  # Filipa Martins
+  # Ana Filipa Martins
     # no changes needed
   # Aleah Finnegan
     # no changes needed
@@ -55,7 +61,7 @@
   # Hillary Alexandra Heron Soto
     # no changes needed
   # Caitlin Rooskrantz
-    later_scores[later_scores$lastname == "Rooskrantz",]$gender <- "w"
+    # no changes needed
   # Sona Artamonova
     # no changes needed
   # Lihie Raz
@@ -69,6 +75,14 @@
   # Ana Perez
     # no changes needed
   # Sarah Voss
+    # no changes needed
+  # Changok An
+    # no changes needed
+  # Valentina Georgieva
+    # no changes needed
+  # Nina Derwael
+    # no changes needed
+  # Charlize Moerz
     # no changes needed
   # Luisa Blanco
     # no changes needed

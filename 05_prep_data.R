@@ -14,8 +14,9 @@ clean_data <- function(in_data) {
   
   # Fix country codes
   gym_data$country <- gsub("\\<GE1\\>|\\<GE2\\>", "GER", gym_data$country)
-  gym_data$country <- gsub("\\<ENG\\>", "GBR", gym_data$country)
-  gym_data$country <- gsub("NIR", "IRL", gym_data$country)
+  gym_data$country <- gsub("\\<NIR\\>", "IRL", gym_data$country)
+  gym_data$country <- gsub("\\<ENG\\>|\\<SCO\\>|\\<WAL\\>|\\<IOM\\>",
+                           "GBR", gym_data$country)
   gym_data$country <- gsub("SIN", "SGP", gym_data$country)
   gym_data$country[gym_data$country == ""] <- NA
   

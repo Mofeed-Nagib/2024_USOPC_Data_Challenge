@@ -29,6 +29,10 @@ later_scores[later_scores$fullname == "Nikita Simonov",]$country <- "AZE"
   later_scores[later_scores$fullname == "Aiden Frick",]$fullname <- "Aiden Michael Frick"
   # Clay Mason Stephens
   later_scores[later_scores$fullname == "Clay Masonstephens",]$fullname <- "Clay Mason Stephens"
+  # Emily Whitehead
+  later_scores[later_scores$fullname == "Emily Whitehead",]$gender <- "w"
+  # Georgia Godwin
+  later_scores[later_scores$fullname == "Georgia Godwin",]$gender <- "w"
   # Kiplin Morrish Smith
   later_scores[later_scores$fullname == "Kiplin Smith",]$fullname <- "Kiplin Morrish Smith"
 # AUT
@@ -93,8 +97,13 @@ later_scores[later_scores$fullname == "Nikita Simonov",]$country <- "AZE"
   later_scores[later_scores$fullname == "Cassandra Lee",]$fullname <- "Cassandra Paige Lee"
   # Elsabeth Black
   later_scores[later_scores$fullname == "Ellie Black",]$fullname <- "Elsabeth Black"
+  # Emma Spence
+  later_scores[later_scores$fullname == "Emma Spence",]$gender <- "w"
+  # Jenna Lalonde
+  later_scores[later_scores$fullname == "Jenna Lalonde",]$gender <- "w"
   # Laurie Denommee
   later_scores[later_scores$fullname == "Laurie Denommée",]$fullname <- "Laurie Denommee"
+  later_scores[later_scores$fullname == "Laurie Denommee",]$gender <- "w"
   # Samuel Zakutney
   later_scores[later_scores$fullname == "Sam Zakutney",]$fullname <- "Samuel Zakutney"
   # Sydney Leslie Turner
@@ -175,7 +184,8 @@ later_scores[later_scores$fullname == "Nikita Simonov",]$country <- "AZE"
   # Yohendry Villaverde Mederos
   later_scores[later_scores$fullname == "Yohendry Villaverde",]$fullname <- "Yohendry Villaverde Mederos"
 # CYP
-  # N/A
+  # Tatiana Bachurina
+  later_scores[later_scores$fullname == "Tatiana Bachurina",]$gender <- "w"
 # CZE
   # N/A
 # DEN
@@ -261,8 +271,6 @@ later_scores[later_scores$fullname == "Nikita Simonov",]$country <- "AZE"
   # Tarmo Tuomas Kanerva
   later_scores[later_scores$fullname == "Tarmo Kanerva",]$fullname <- "Tarmo Tuomas Kanerva"
 # FRA
-  # Cameron-Lie Bernard
-  later_scores[later_scores$fullname == "Cameron Lie Bernard",]$fullname <- "Cameron-Lie Bernard"
   # Lea Franceries
   later_scores[later_scores$fullname == "Léa Franceries",]$fullname <- "Lea Franceries"
   # Leo Saladino
@@ -299,6 +307,29 @@ later_scores[later_scores$fullname == "Nikita Simonov",]$country <- "AZE"
   later_scores[later_scores$fullname == "Lea Quaas",]$fullname <- "Lea Marie Quaas"
   # Pauline Schaefer Betz
   later_scores[later_scores$fullname == "Pauline Schäfer",]$fullname <- "Pauline Schaefer Betz"
+# GBR
+  # Alice Kinsella
+  later_scores[later_scores$fullname == "Alice Kinsella",]$gender <- "w"
+  # Cara Kennedy
+  later_scores[later_scores$fullname == "Cara Kennedy",]$gender <- "w"
+  # Eilidh Gorrell
+  later_scores[later_scores$fullname == "Eilidh Gorrell",]$gender <- "w"
+  # Emily Bremner
+  later_scores[later_scores$fullname == "Emily Bremner",]$gender <- "w"
+  # Georgia Mae Fenton
+  later_scores[later_scores$fullname == "Georgia Mae Fenton",]$gender <- "w"
+  # Jea Maracha
+  later_scores[later_scores$fullname == "Jea Maracha",]$gender <- "w"
+  # Mia Evans
+  later_scores[later_scores$fullname == "Mia Evans",]$gender <- "w"
+  # Ondine Achampong
+  later_scores[later_scores$fullname == "Ondine Achampong",]$gender <- "w"
+  # Poppy Grace Stickler
+  later_scores[later_scores$fullname == "Poppy Grace Stickler",]$gender <- "w"
+  # Shannon Archer
+  later_scores[later_scores$fullname == "Shannon Archer",]$gender <- "w"
+  # Tara Donnelly
+  later_scores[later_scores$fullname == "Tara Donnelly",]$gender <- "w"
 # GRE
   # Areti Paraskevi Pagoni
   later_scores[later_scores$fullname == "Areti Pagoni",]$fullname <- "Areti Paraskevi Pagoni"
@@ -321,9 +352,10 @@ later_scores[later_scores$fullname == "Nikita Simonov",]$country <- "AZE"
   # Larasati Rengganis
   later_scores[later_scores$fullname == "Larasati Regganis",]$fullname <- "Larasati Rengganis"
 # IND
-  # N/A
-# IOM
-  # N/A
+  # Pranati Nayak
+  later_scores[later_scores$fullname == "Pranati Nayak",]$gender <- "w"
+  # Ruthuja Nataraj
+  later_scores[later_scores$fullname == "Ruthuja Nataraj",]$gender <- "w"
 # IRI
   # N/A
 # IRL
@@ -353,6 +385,8 @@ later_scores[later_scores$fullname == "Nikita Simonov",]$country <- "AZE"
 # JAM
   # Caleb Fischle Faulk
   later_scores[later_scores$fullname == "Caleb Faulk",]$fullname <- "Caleb Fischle Faulk"
+  # Danyella Richards
+  later_scores[later_scores$fullname == "Danyella Richards",]$gender <- "w"
   # Elel Diliza Wahrmann Baker
   later_scores[later_scores$fullname == "Elel Wahrmann Baker",]$fullname <- "Elel Diliza Wahrmann Baker"
   # Michael James Reid
@@ -444,8 +478,7 @@ later_scores[later_scores$fullname == "Nikita Simonov",]$country <- "AZE"
   later_scores[later_scores$fullname == "Peder Skogvang",]$fullname <- "Peder Funderud Skogvang"
 # NZL
   # Jorden O’Connell-Inns
-  later_scores[later_scores$fullname == "Jorden O’connell-Inns"|
-               later_scores$fullname == "Jorden Oconnell Inns",]$fullname <- "Jorden O’Connell-Inns"
+  later_scores[later_scores$fullname == "Jorden Oconnell-Inns",]$fullname <- "Jorden O’Connell-Inns"
   # Keira Rolston-Larking
   later_scores[later_scores$fullname == "Keira Rolston Larking",]$fullname <- "Keira Rolston-Larking"
   # Samuel Dick
@@ -475,7 +508,7 @@ later_scores[later_scores$fullname == "Nikita Simonov",]$country <- "AZE"
   later_scores[later_scores$fullname == "Richard Atencio",]$fullname <- "Richard Ameth Atencio Higinio"
   # Sebastian Andres Sue Dominguez
   later_scores[later_scores$fullname == "Sebastián Andrés Sue Domínguez"|
-               later_scores$fullname == "Sebastian Sue",]$fullname <- "Karla Andrea Navas Boyd"
+               later_scores$fullname == "Sebastian Sue",]$fullname <- "Sebastian Andres Sue Dominguez"
   # Valentina Brostella Arias
   later_scores[later_scores$fullname == "Valentin Brostella"|
                later_scores$fullname == "Valentina Brostella",]$fullname <- "Valentina Brostella Arias"
@@ -499,6 +532,8 @@ later_scores[later_scores$fullname == "Nikita Simonov",]$country <- "AZE"
   # Sebastian Norbert Gawronski
   later_scores[later_scores$fullname == "Sebastian Gawronski",]$fullname <- "Sebastian Norbert Gawronski"
 # POR
+  # Ana Filipa Martins
+  later_scores[later_scores$fullname == "Filipa Martins",]$fullname <- "Ana Filipa Martins"
   # Jose Pedro Mendes Nogueira
   later_scores[later_scores$fullname == "Jose Nogueira",]$fullname <- "Jose Pedro Mendes Nogueira"
 # PRK
@@ -550,15 +585,20 @@ later_scores[later_scores$fullname == "Nikita Simonov",]$country <- "AZE"
                later_scores$fullname == "Toma Modoianu-Zseder"|
                later_scores$fullname == "Toma Modoianu Zseder",]$fullname <- "Toma Roland Modoianu-Zseder"
 # RSA
+  # Caitlin Rooskrantz
+  later_scores[later_scores$fullname == "Caitlin Rooskrantz",]$gender <- "w"
+  # Naveen Daries
+  later_scores[later_scores$fullname == "Naveen Daries",]$gender <- "w"
   # Shante Koti
   later_scores[later_scores$fullname == "Shanté Koti",]$fullname <- "Shante Koti"
 # RUS
   # N/A
-# SCO
-  # N/A
 # SGP
   # Emma En Lin Yap
   later_scores[later_scores$fullname == "Emma Yap",]$fullname <- "Emma En Lin Yap"
+  later_scores[later_scores$fullname == "Emma En Lin Yap",]$gender <- "w"
+  # Nadine Joy Nathan
+  later_scores[later_scores$fullname == "Nadine Joy Nathan",]$gender <- "w"
   # Wei An Terry Tay
   later_scores[later_scores$fullname == "Terry Tay Wei An",]$fullname <- "Wei An Terry Tay"
 # SLO
@@ -692,8 +732,21 @@ later_scores[later_scores$fullname == "Nikita Simonov",]$country <- "AZE"
 # VIE
   # Thanh Tung Le
   later_scores[later_scores$fullname == "Thanh Tùng Lê",]$fullname <- "Thanh Tung Le"
-# WAL
-  # N/A
   
+
 # df <- later_scores[later_scores$country == sort(unique(later_scores$country))[##],]
-# sort(unique(df$fullname))
+# sort(unique(df$fullname))  
+
+# for (j in seq_along(unique(later_scores$country))) {
+#   df <- later_scores[later_scores$country == sort(unique(later_scores$country))[j],]
+#   for (i in seq_along(unique(df$fullname))) {
+#     df_2 <- df[df$fullname == sort(unique(df$fullname))[i],]
+#     
+#     if (length(unique(df_2$gender)) > 1) {
+#       print(sort(unique(df$fullname))[i])
+#     }
+#     if (length(unique(df_2$country)) > 1) {
+#       print(sort(unique(df$fullname))[i])
+#     }
+#   }  
+# }

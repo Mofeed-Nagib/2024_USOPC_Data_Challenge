@@ -45,14 +45,14 @@ women_athletes <- later_player_scores %>%
                   slice_max(avg_score, n = 5) %>% 
                   mutate(flag_team = 1)
 
-
 # known qualifiers of the best 36 gymnasts whose teams did not qualify
 known_men_dnq <- c("Milad Karimi", "Artem Dolgopyat", "Artur Davtyan",
                    "Krisztofer Meszaros", "Junho Lee", "Diogo Soares",
                    "Luka Van Den Keybus", "Andrei Vasile Muntean",
-                   "Rhys McClenaghan", "Eleftherios Petrounias", "Kevin Penev",
-                   "Noah Kuavita", "Tin Srbic", "Audrys Nin Reyes", 
-                   "Carlos Edriel Yulo")
+                   "Carlos Edriel Yulo", "Rhys McClenaghan",
+                   "Eleftherios Petrounias", "Kevin Penev", "Noah Kuavita",
+                   "Tin Srbic", "Sunghyun Ryu", "Ahmad Abu Al Soud",
+                   "Chia-Hung Tang", "Audrys Nin Reyes")
 
 top_men_dnq <- later_player_scores %>% 
                filter(fullname %in% known_men_dnq) %>% 
@@ -60,13 +60,16 @@ top_men_dnq <- later_player_scores %>%
                arrange(-avg_score) %>%
                mutate(flag_team = 0)
 
-known_women_dnq <- c("Kaylia Nemour", "Pauline Schaefer Betz", "Alexa Citlali Moreno Medina",
-                     "Filipa Martins", "Aleah Finnegan", "Bettina Lili Czifra",
+known_women_dnq <- c("Kaylia Nemour", "Pauline Schaefer Betz",
+                     "Alexa Citlali Moreno Medina", "Ana Filipa Martins",
+                     "Aleah Finnegan", "Bettina Lili Czifra",
                      "Alba Petisco", "Anna Lashchevska", "Lena Bickel",
                      "Hillary Alexandra Heron Soto", "Caitlin Rooskrantz", 
                      "Sona Artamonova", "Lihie Raz", "Lucija Hribar",
                      "Csenge Maria Bacskay", "Ahtziri Viridiana Sandoval", 
-                     "Ana Perez", "Sarah Voss", "Luisa Blanco", "Rifda Irfanaluthfi")
+                     "Ana Perez", "Sarah Voss", "Changok An",
+                     "Valentina Georgieva", "Nina Derwael", "Charlize Moerz",
+                     "Luisa Blanco", "Rifda Irfanaluthfi")
 
 top_women_dnq <- later_player_scores %>% 
                  filter(fullname %in% known_women_dnq) %>% 
@@ -76,27 +79,25 @@ top_women_dnq <- later_player_scores %>%
 
 # determine the rest of the best 36 gymnasts whose teams did not qualify
 # (maximum of 3 individuals per country)
-best_men_dnq <- later_player_scores %>%
-                filter(!(country %in% men_countries) &
-                       !(fullname %in% known_men_dnq) & gender == 'm') %>%
-                arrange(-avg_score) %>%
+best_men_dnq <- top_men_dnq %>%
+                rbind(later_player_scores %>%
+                      filter(!(country %in% men_countries) &
+                             !(fullname %in% known_men_dnq) & gender == 'm') %>%
+                      arrange(-avg_score)) %>%
                 group_by(country) %>%
-                slice_head(n = 3) %>%
-                arrange(-avg_score) %>%
-                head(36 - nrow(top_men_dnq)) %>%
-                mutate(flag_team = 0) %>%
-                rbind(top_men_dnq)
+                filter(row_number() <= 3) %>%
+                head(36) %>%
+                mutate(flag_team = 0)
 
-best_women_dnq <- later_player_scores %>% 
-                  filter(!(country %in% women_countries) &
-                         !(fullname %in% known_women_dnq) & gender == 'w') %>% 
-                  arrange(-avg_score) %>%
+best_women_dnq <- top_women_dnq %>%
+                  rbind(later_player_scores %>%
+                        filter(!(country %in% women_countries) &
+                               !(fullname %in% known_women_dnq) & gender == 'w') %>%
+                        arrange(-avg_score)) %>%
                   group_by(country) %>%
-                  slice_head(n = 3) %>%
-                  arrange(-avg_score) %>%
-                  head(36 - nrow(top_women_dnq)) %>% 
-                  mutate(flag_team = 0) %>%
-                  rbind(top_women_dnq)
+                  filter(row_number() <= 3) %>%
+                  head(36) %>%
+                  mutate(flag_team = 0)
 
 #=======================#
 #=== get us athletes ===#

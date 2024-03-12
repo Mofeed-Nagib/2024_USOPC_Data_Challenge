@@ -18,7 +18,7 @@ womens_apparatus <- c('fx', 'vt', 'bb', 'ub')
 mens_apparatus   <- c('fx', 'vt', 'hb', 'pb', 'sr', 'ph')
 
 # select countries that will compete in the Olympics
-womens_known_qualifiers <- c('USA', 'CAN', 'GBR', 'CHN', 'BRA', 'ITA',
+womens_known_qualifiers <- c('USA', 'GBR', 'CAN', 'CHN', 'BRA', 'ITA',
                              'NED', 'FRA', 'JPN', 'AUS', 'ROU', 'KOR')
 mens_known_qualifiers   <- c('CHN', 'JPN', 'GBR', 'USA', 'CAN', 'GER',
                              'ITA', 'SUI', 'ESP', 'TUR', 'NED', 'UKR')
