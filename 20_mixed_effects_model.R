@@ -26,6 +26,7 @@ m_HB$fold = sample(folds, nrow(m_HB), replace = FALSE)
 
 # initialize a column to store the predicted High Bar scores
 m_HB$lmer1 <- NA
+m_HB$raw_means <- NA
 
 # perform k-fold cross-validation
 for(j in 1:k){
@@ -33,15 +34,26 @@ for(j in 1:k){
   test.rows <- m_HB$fold == j
   
   # fit a linear mixed-effects model (lmer) to the training data
-  lmer1 <- lmer(score ~ (1|fullname) + round, data = m_HB[train.rows,])
+  lmer1 <- lmer(score ~ (1|fullname) + round + location, data = m_HB[train.rows,])
   
   # predict the scores on the test data using the trained model
   m_HB[test.rows,]$lmer1 <- predict(lmer1, newdata = m_HB[test.rows,], 
                                     type = 'response', allow.new.levels = TRUE)
+  
+  # calculate the mean scores for the training data grouped by gymnast
+  raw_means <- m_HB[train.rows,] %>% group_by(fullname) %>% summarise(mean_score = mean(score))
+  
+  # fill in the mean scores for the test data, either from the calculated means or the overall mean if not available
+  m_HB[test.rows,]$raw_means <- ifelse(m_HB[test.rows,]$fullname %in% raw_means$fullname, 
+                                       raw_means$mean_score[match(m_HB[test.rows,]$fullname, raw_means$fullname)], 
+                                       mean(raw_means$mean_score))
 }
 
-# calculate the root mean squared error (RMSE) for the predictions
+# calculate the root mean squared error (RMSE) for the mixed-effects predictions
 sqrt(mean((m_HB$lmer1 - m_HB$score)^2))
+
+# calculate the root mean squared error (RMSE) for the mean-based predictions
+sqrt(mean((m_HB$raw_means - m_HB$score)^2))
 
 # compute the mean score for each male gymnast that participated in High Bar
 m_HB_mean <- m_HB %>% group_by(fullname) %>% summarise(mean_lmer1 = mean(lmer1))
@@ -60,6 +72,7 @@ m_PH$fold = sample(folds, nrow(m_PH), replace = FALSE)
 
 # initialize a column to store the predicted Pommel Horse scores
 m_PH$lmer1 <- NA
+m_PH$raw_means <- NA
 
 # perform k-fold cross-validation
 for(j in 1:k){
@@ -72,10 +85,21 @@ for(j in 1:k){
   # predict the scores on the test data using the trained model
   m_PH[test.rows,]$lmer1 <- predict(lmer1, newdata = m_PH[test.rows,],
                                     type = 'response', allow.new.levels = TRUE)
+  
+  # calculate the mean scores for the training data grouped by gymnast
+  raw_means <- m_PH[train.rows,] %>% group_by(fullname) %>% summarise(mean_score = mean(score))
+  
+  # fill in the mean scores for the test data, either from the calculated means or the overall mean if not available
+  m_PH[test.rows,]$raw_means <- ifelse(m_PH[test.rows,]$fullname %in% raw_means$fullname, 
+                                       raw_means$mean_score[match(m_PH[test.rows,]$fullname, raw_means$fullname)], 
+                                       mean(raw_means$mean_score))
 }
 
-# calculate the root mean squared error (RMSE) for the predictions
+# calculate the root mean squared error (RMSE) for the mixed-effects predictions
 sqrt(mean((m_PH$lmer1 - m_PH$score)^2))
+
+# calculate the root mean squared error (RMSE) for the mean-based predictions
+sqrt(mean((m_PH$raw_means - m_PH$score)^2))
 
 # compute the mean score for each male gymnast that participated in Pommel Horse
 m_PH_mean <- m_PH %>% group_by(fullname) %>% summarise(mean_lmer1 = mean(lmer1))
@@ -94,6 +118,7 @@ m_FX$fold = sample(folds, nrow(m_FX), replace = FALSE)
 
 # initialize a column to store the predicted Floor Exercise scores
 m_FX$lmer1 <- NA
+m_FX$raw_means <- NA
 
 # perform k-fold cross-validation
 for(j in 1:k){
@@ -106,10 +131,21 @@ for(j in 1:k){
   # predict the scores on the test data using the trained model
   m_FX[test.rows,]$lmer1 <- predict(lmer1, newdata = m_FX[test.rows,],
                                     type = 'response', allow.new.levels = TRUE)
+  
+  # calculate the mean scores for the training data grouped by gymnast
+  raw_means <- m_FX[train.rows,] %>% group_by(fullname) %>% summarise(mean_score = mean(score))
+  
+  # fill in the mean scores for the test data, either from the calculated means or the overall mean if not available
+  m_FX[test.rows,]$raw_means <- ifelse(m_FX[test.rows,]$fullname %in% raw_means$fullname, 
+                                       raw_means$mean_score[match(m_FX[test.rows,]$fullname, raw_means$fullname)], 
+                                       mean(raw_means$mean_score))
 }
 
-# calculate the root mean squared error (RMSE) for the predictions
+# calculate the root mean squared error (RMSE) for the mixed-effects predictions
 sqrt(mean((m_FX$lmer1 - m_FX$score)^2))
+
+# calculate the root mean squared error (RMSE) for the mean-based predictions
+sqrt(mean((m_FX$raw_means - m_FX$score)^2))
 
 # compute the mean score for each male gymnast that participated in Floor Exercise
 m_FX_mean <- m_FX %>% group_by(fullname) %>% summarise(mean_lmer1 = mean(lmer1))
@@ -128,6 +164,7 @@ m_PB$fold = sample(folds, nrow(m_PB), replace = FALSE)
 
 # initialize a column to store the predicted Parallel Bars scores
 m_PB$lmer1 <- NA
+m_PB$raw_means <- NA
 
 # perform k-fold cross-validation
 for(j in 1:k){
@@ -140,10 +177,21 @@ for(j in 1:k){
   # predict the scores on the test data using the trained model
   m_PB[test.rows,]$lmer1 <- predict(lmer1, newdata = m_PB[test.rows,],
                                     type = 'response', allow.new.levels = TRUE)
+  
+  # calculate the mean scores for the training data grouped by gymnast
+  raw_means <- m_PB[train.rows,] %>% group_by(fullname) %>% summarise(mean_score = mean(score))
+  
+  # fill in the mean scores for the test data, either from the calculated means or the overall mean if not available
+  m_PB[test.rows,]$raw_means <- ifelse(m_PB[test.rows,]$fullname %in% raw_means$fullname, 
+                                       raw_means$mean_score[match(m_PB[test.rows,]$fullname, raw_means$fullname)], 
+                                       mean(raw_means$mean_score))
 }
 
-# calculate the root mean squared error (RMSE) for the predictions
+# calculate the root mean squared error (RMSE) for the mixed-effects predictions
 sqrt(mean((m_PB$lmer1 - m_PB$score)^2))
+
+# calculate the root mean squared error (RMSE) for the mean-based predictions
+sqrt(mean((m_PB$raw_means - m_PB$score)^2))
 
 # compute the mean score for each male gymnast that participated in Parallel Bars
 m_PB_mean <- m_PB %>% group_by(fullname) %>% summarise(mean_lmer1 = mean(lmer1))
@@ -162,6 +210,7 @@ m_SR$fold = sample(folds, nrow(m_SR), replace = FALSE)
 
 # initialize a column to store the predicted Still Rings scores
 m_SR$lmer1 <- NA
+m_SR$raw_means <- NA
 
 # perform k-fold cross-validation
 for(j in 1:k){
@@ -174,10 +223,21 @@ for(j in 1:k){
   # predict the scores on the test data using the trained model
   m_SR[test.rows,]$lmer1 <- predict(lmer1, newdata = m_SR[test.rows,],
                                     type = 'response', allow.new.levels = TRUE)
+  
+  # calculate the mean scores for the training data grouped by gymnast
+  raw_means <- m_SR[train.rows,] %>% group_by(fullname) %>% summarise(mean_score = mean(score))
+  
+  # fill in the mean scores for the test data, either from the calculated means or the overall mean if not available
+  m_SR[test.rows,]$raw_means <- ifelse(m_SR[test.rows,]$fullname %in% raw_means$fullname, 
+                                       raw_means$mean_score[match(m_SR[test.rows,]$fullname, raw_means$fullname)], 
+                                       mean(raw_means$mean_score))
 }
 
-# calculate the root mean squared error (RMSE) for the predictions
+# calculate the root mean squared error (RMSE) for the mixed-effects predictions
 sqrt(mean((m_SR$lmer1 - m_SR$score)^2))
+
+# calculate the root mean squared error (RMSE) for the mean-based predictions
+sqrt(mean((m_SR$raw_means - m_SR$score)^2))
 
 # compute the mean score for each male gymnast that participated in Still Rings
 m_SR_mean <- m_SR %>% group_by(fullname) %>% summarise(mean_lmer1 = mean(lmer1))
@@ -196,6 +256,7 @@ m_VT$fold = sample(folds, nrow(m_VT), replace = FALSE)
 
 # initialize a column to store the predicted Vault scores
 m_VT$lmer1 <- NA
+m_VT$raw_means <- NA
 
 # perform k-fold cross-validation
 for(j in 1:k){
@@ -208,10 +269,21 @@ for(j in 1:k){
   # predict the scores on the test data using the trained model
   m_VT[test.rows,]$lmer1 <- predict(lmer1, newdata = m_VT[test.rows,],
                                     type = 'response', allow.new.levels = TRUE)
+  
+  # calculate the mean scores for the training data grouped by gymnast
+  raw_means <- m_VT[train.rows,] %>% group_by(fullname) %>% summarise(mean_score = mean(score))
+  
+  # fill in the mean scores for the test data, either from the calculated means or the overall mean if not available
+  m_VT[test.rows,]$raw_means <- ifelse(m_VT[test.rows,]$fullname %in% raw_means$fullname, 
+                                       raw_means$mean_score[match(m_VT[test.rows,]$fullname, raw_means$fullname)], 
+                                       mean(raw_means$mean_score))
 }
 
-# calculate the root mean squared error (RMSE) for the predictions
+# calculate the root mean squared error (RMSE) for the mixed-effects predictions
 sqrt(mean((m_VT$lmer1 - m_VT$score)^2))
+
+# calculate the root mean squared error (RMSE) for the mean-based predictions
+sqrt(mean((m_VT$raw_means - m_VT$score)^2))
 
 # compute the mean score for each male gymnast that participated in Vault
 m_VT_mean <- m_VT %>% group_by(fullname) %>% summarise(mean_lmer1 = mean(lmer1))
@@ -235,6 +307,7 @@ w_BB$fold = sample(folds, nrow(w_BB), replace = FALSE)
 
 # initialize a column to store the predicted Balance Beam scores
 w_BB$lmer1 <- NA
+w_BB$raw_means <- NA
 
 # perform k-fold cross-validation
 for(j in 1:k){
@@ -247,10 +320,21 @@ for(j in 1:k){
   # predict the scores on the test data using the trained model
   w_BB[test.rows,]$lmer1 <- predict(lmer1, newdata = w_BB[test.rows,],
                                     type = 'response', allow.new.levels = TRUE)
+  
+  # calculate the mean scores for the training data grouped by gymnast
+  raw_means <- w_BB[train.rows,] %>% group_by(fullname) %>% summarise(mean_score = mean(score))
+  
+  # fill in the mean scores for the test data, either from the calculated means or the overall mean if not available
+  w_BB[test.rows,]$raw_means <- ifelse(w_BB[test.rows,]$fullname %in% raw_means$fullname, 
+                                       raw_means$mean_score[match(w_BB[test.rows,]$fullname, raw_means$fullname)], 
+                                       mean(raw_means$mean_score))
 }
 
-# calculate the root mean squared error (RMSE) for the predictions
+# calculate the root mean squared error (RMSE) for the mixed-effects predictions
 sqrt(mean((w_BB$lmer1 - w_BB$score)^2))
+
+# calculate the root mean squared error (RMSE) for the mean-based predictions
+sqrt(mean((w_BB$raw_means - w_BB$score)^2))
 
 # compute the mean score for each male gymnast that participated in High Bar
 w_BB_mean <- w_BB %>% group_by(fullname) %>% summarise(mean_lmer1 = mean(lmer1))
@@ -269,6 +353,7 @@ w_FX$fold = sample(folds, nrow(w_FX), replace = FALSE)
 
 # initialize a column to store the predicted Floor Exercise scores
 w_FX$lmer1 <- NA
+w_FX$raw_means <- NA
 
 # perform k-fold cross-validation
 for(j in 1:k){
@@ -281,10 +366,21 @@ for(j in 1:k){
   # predict the scores on the test data using the trained model
   w_FX[test.rows,]$lmer1 <- predict(lmer1, newdata = w_FX[test.rows,],
                                     type = 'response', allow.new.levels = TRUE)
+  
+  # calculate the mean scores for the training data grouped by gymnast
+  raw_means <- w_FX[train.rows,] %>% group_by(fullname) %>% summarise(mean_score = mean(score))
+  
+  # fill in the mean scores for the test data, either from the calculated means or the overall mean if not available
+  w_FX[test.rows,]$raw_means <- ifelse(w_FX[test.rows,]$fullname %in% raw_means$fullname, 
+                                       raw_means$mean_score[match(w_FX[test.rows,]$fullname, raw_means$fullname)], 
+                                       mean(raw_means$mean_score))
 }
 
-# calculate the root mean squared error (RMSE) for the predictions
+# calculate the root mean squared error (RMSE) for the mixed-effects predictions
 sqrt(mean((w_FX$lmer1 - w_FX$score)^2))
+
+# calculate the root mean squared error (RMSE) for the mean-based predictions
+sqrt(mean((w_FX$raw_means - w_FX$score)^2))
 
 # compute the mean score for each male gymnast that participated in Floor Exercise
 w_FX_mean <- w_FX %>% group_by(fullname) %>% summarise(mean_lmer1 = mean(lmer1))
@@ -303,6 +399,7 @@ w_UB$fold = sample(folds, nrow(w_UB), replace = FALSE)
 
 # initialize a column to store the predicted Uneven Bars scores
 w_UB$lmer1 <- NA
+w_UB$raw_means <- NA
 
 # perform k-fold cross-validation
 for(j in 1:k){
@@ -315,10 +412,21 @@ for(j in 1:k){
   # predict the scores on the test data using the trained model
   w_UB[test.rows,]$lmer1 <- predict(lmer1, newdata = w_UB[test.rows,],
                                     type = 'response', allow.new.levels = TRUE)
+  
+  # calculate the mean scores for the training data grouped by gymnast
+  raw_means <- w_UB[train.rows,] %>% group_by(fullname) %>% summarise(mean_score = mean(score))
+  
+  # fill in the mean scores for the test data, either from the calculated means or the overall mean if not available
+  w_UB[test.rows,]$raw_means <- ifelse(w_UB[test.rows,]$fullname %in% raw_means$fullname, 
+                                       raw_means$mean_score[match(w_UB[test.rows,]$fullname, raw_means$fullname)], 
+                                       mean(raw_means$mean_score))
 }
 
-# calculate the root mean squared error (RMSE) for the predictions
+# calculate the root mean squared error (RMSE) for the mixed-effects predictions
 sqrt(mean((w_UB$lmer1 - w_UB$score)^2))
+
+# calculate the root mean squared error (RMSE) for the mean-based predictions
+sqrt(mean((w_UB$raw_means - w_UB$score)^2))
 
 # compute the mean score for each male gymnast that participated in High Bar
 w_UB_mean <- w_UB %>% group_by(fullname) %>% summarise(mean_lmer1 = mean(lmer1))
@@ -340,6 +448,7 @@ w_VT$fold = sample(folds, nrow(w_VT), replace = FALSE)
 
 # initialize a column to store the predicted Vault scores
 w_VT$lmer1 <- NA
+w_VT$raw_means <- NA
 
 # perform k-fold cross-validation
 for(j in 1:k){
@@ -352,10 +461,21 @@ for(j in 1:k){
   # predict the scores on the test data using the trained model
   w_VT[test.rows,]$lmer1 <- predict(lmer1, newdata = w_VT[test.rows,],
                                     type = 'response', allow.new.levels = TRUE)
+  
+  # calculate the mean scores for the training data grouped by gymnast
+  raw_means <- w_VT[train.rows,] %>% group_by(fullname) %>% summarise(mean_score = mean(score))
+  
+  # fill in the mean scores for the test data, either from the calculated means or the overall mean if not available
+  w_VT[test.rows,]$raw_means <- ifelse(w_VT[test.rows,]$fullname %in% raw_means$fullname, 
+                                       raw_means$mean_score[match(w_VT[test.rows,]$fullname, raw_means$fullname)], 
+                                       mean(raw_means$mean_score))
 }
 
-# calculate the root mean squared error (RMSE) for the predictions
+# calculate the root mean squared error (RMSE) for the mixed-effects predictions
 sqrt(mean((w_VT$lmer1 - w_VT$score)^2))
+
+# calculate the root mean squared error (RMSE) for the mean-based predictions
+sqrt(mean((w_VT$raw_means - w_VT$score)^2))
 
 # compute the mean score for each male gymnast that participated in Vault
 w_VT_mean <- w_VT %>% group_by(fullname) %>% summarise(mean_lmer1 = mean(lmer1))
