@@ -5,7 +5,7 @@
 #==================#
 
 # set relevant parameters
-trials <- 10
+trials <- 100
 women_team_combos <- NA # if you only want to run a certain number of team combos instead of all
 men_team_combos <- NA # if you only want to run a certain number of team combos instead of all
 
