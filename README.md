@@ -1,5 +1,6 @@
 # UCSAS 2024 USOPC Data Challenge
 
+## Selected as finalist: https://statds.org/events/ucsas2024/challenge.html#finalists
 
 ## File Hierarchy
 
